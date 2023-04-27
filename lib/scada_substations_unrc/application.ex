@@ -5,11 +5,17 @@ defmodule ScadaSubstationsUnrc.Application do
 
   use Application
 
+  alias ScadaSubstationsUnrc.Workers.WeatherAccess
+
   @impl true
   def start(_type, _args) do
     children = [
-      # Starts a worker by calling: ScadaSubstationsUnrc.Worker.start_link(arg)
-      # {ScadaSubstationsUnrc.Worker, arg}
+      # Launch the Supervisor for all the substations
+      {DynamicSupervisor, strategy: :one_for_one, name: ScadaSubstationsUnrc.DSupervisor},
+      # Launch all the monitors for a chain
+      {Task, &ScadaSubstationsUnrc.DSupervisor.start_registered_substation/0},
+      # Starts weather worker: WeatherWorker.start_link(arg)
+      WeatherAccess
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
