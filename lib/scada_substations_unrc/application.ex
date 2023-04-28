@@ -10,11 +10,13 @@ defmodule ScadaSubstationsUnrc.Application do
   @impl true
   def start(_type, _args) do
     children = [
+      # Start the Ecto repository
+      ScadaSubstationsUnrc.Domain.Repo,
       # Launch the Supervisor for all the substations
       {DynamicSupervisor, strategy: :one_for_one, name: ScadaSubstationsUnrc.DSupervisor},
       # Launch all the monitors for a chain
       {Task, &ScadaSubstationsUnrc.DSupervisor.start_registered_substation/0},
-      # Starts weather worker: WeatherWorker.start_link(arg)
+      # Starts weather access worker
       WeatherAccess
     ]
 

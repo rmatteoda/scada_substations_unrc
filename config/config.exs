@@ -4,7 +4,7 @@ import Config
 
 # General application configuration
 #config :scada_substations_unrc,
-#  ecto_repos: [ScadaMaster.Repo]
+#  ecto_repos: [ScadaSubstationsUnrc.Repo]
 
 # configure ip of diferent device connected to substation to be monitored.
 config :scada_substations_unrc, :device_table,
@@ -18,27 +18,18 @@ config :scada_substations_unrc, :device_table,
 #   backends: [{LoggerFileBackend, :debug},
 #              {LoggerFileBackend, :error}]
 
-config :logger, :debug,
-  path: "log/debug.log",
-  level: :debug
-
-config :logger, :error,
-  path: "log/error.log",
-  level: :error
+# Configures Elixir's Logger
+config :logger, :console,
+  format: "$time $metadata[$level] $message\n",
+  metadata: []
 
 #config time for to collect data from substations (recommended 10 minutes)
-#config :scada_substations_unrc, ScadaMaster,
-#  collect_each: 1000 * 60 * 10 # 10 minutes
+config :scada_substations_unrc, ScadaSubstationsUnrc,
+  poll_time: 10 * 60 * 1000, # 10 minutes
+  report_after: 2 * 60 * 60 * 1000, # 2 horas
+  report_email_after: 12 * 60 * 60 * 1000 # 10 horas
 
-#config time to save data into csv file (recomended 2 hours)
-# config :scada_substations_unrc, ScadaMaster,
-#   report_after: 1000 * 60 * 120 # 120 minutes
-
-#config time to send email report with csv file (recomended 12 hours)
-# config :scada_substations_unrc, ScadaMaster,
-#   report_email_after: 1000 * 60 * 720 #720 12 horas
-
-# config :scada_substations_unrc, ScadaMaster,
+# config :scada_substations_unrc, ScadaSubstationsUnrc,
 #   report_path: "/home/unrc/reports/"
 
 # Config Email Adapter

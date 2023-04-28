@@ -26,8 +26,10 @@ defmodule ScadaSubstationsUnrc.DSupervisor do
   """
   @spec start_registered_substation :: :ok
   def start_registered_substation() do
-    # FOSS.Storage.chains()
-    # |> Enum.each(fn chain -> start_child(chain) end)
+    # TODO create substation from config table on DB and load from there
+    # load substations from config file and store it if does not exist
+    Application.get_env(:scada_substations_unrc, :device_table)
+    |> Enum.each(fn substation -> start_child(substation) end)
   end
 
   # ----------------------------------------------------------------------------

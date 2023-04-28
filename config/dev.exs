@@ -12,4 +12,3 @@ import Config
 
 # Do not include metadata nor timestamps in development logs
 config :logger, format: "[$level] $message\n"
-# config :logger, :console, format: "[$level] $message\n"
