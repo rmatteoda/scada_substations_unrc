@@ -17,7 +17,9 @@ defmodule ScadaSubstationsUnrc.Application do
       # Launch all the monitors for a chain
       {Task, &ScadaSubstationsUnrc.DSupervisor.start_registered_substation/0},
       # Starts weather access worker
-      WeatherAccess
+      WeatherAccess,
+      # Starts Oban job processor
+      {Oban, Application.fetch_env!(:scada_substations_unrc, Oban)}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

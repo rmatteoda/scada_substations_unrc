@@ -1,4 +1,5 @@
 defmodule ScadaSubstationsUnrc.MixProject do
+  @moduledoc false
   use Mix.Project
 
   def project do
@@ -33,6 +34,7 @@ defmodule ScadaSubstationsUnrc.MixProject do
       {:jason, "~> 1.2"},
       {:swoosh, "~> 1.3"},
       {:ecto_psql_extras, "~> 0.7.10"},
+      {:oban, "~> 2.14"},
 
       # Others
       {:logger_json, "~> 5.1"},
@@ -42,8 +44,13 @@ defmodule ScadaSubstationsUnrc.MixProject do
       {:httpoison, "~> 1.8"},
       {:tesla, "~> 1.4"},
 
+      # Code quality and testing
+      {:credo, "~> 1.6", runtime: false},
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
+      {:ex_doc, "~> 0.28", only: :dev, runtime: false},
+
       # Tesla adapter
-      {:hackney, "~> 1.18"},
+      {:hackney, "~> 1.18"}
     ]
   end
 
