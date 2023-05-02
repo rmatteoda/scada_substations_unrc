@@ -4,7 +4,7 @@ defmodule ScadaSubstationsUnrc.Domain.Repo.Migrations.CreateMeasuredValuesTable 
   def change do
     # measured_values belong to a substation
     create table(:measured_values) do
-      add :substation_id, references(:substations)
+      add(:substation_id, :uuid)
       add :voltage_a,   :float
       add :voltage_b,   :float
       add :voltage_c,   :float
@@ -25,8 +25,6 @@ defmodule ScadaSubstationsUnrc.Domain.Repo.Migrations.CreateMeasuredValuesTable 
       timestamps()
     end
     # We also add an index so we can find substations
-    create index(:measured_values, [:substation_id])
-
-    create unique_index(:substations, [:name])
+    create(index(:measured_values, [:substation_id]))
   end
 end

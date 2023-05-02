@@ -55,10 +55,10 @@ config :scada_substations_unrc, Oban,
     Oban.Plugins.Pruner,
     {Oban.Plugins.Cron,
      crontab: [
-       {"0 * * * *", ScadaSubstationsUnrc.Workers.WeatherAccess,
+       {"* * * * *", ScadaSubstationsUnrc.Workers.WeatherObanWorker,
         args: %{
-          access_key: "e08eb75ade286ed290fbc7a414c6e50c",
-          weather_client_url: "http://api.weatherstack.com/current"
+          weather_service_url: "http://api.weatherstack.com/current",
+          access_key: "e08eb75ade286ed290fbc7a414c6e50c"
         }}
        #    {"0 12 * * MON", MyApp.MondayWorker, queue: :scheduled, tags: ["mondays"]}
      ]}

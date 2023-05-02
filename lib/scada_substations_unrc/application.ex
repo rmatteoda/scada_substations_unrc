@@ -5,8 +5,6 @@ defmodule ScadaSubstationsUnrc.Application do
 
   use Application
 
-  alias ScadaSubstationsUnrc.Workers.WeatherAccess
-
   @impl true
   def start(_type, _args) do
     children = [
@@ -16,8 +14,6 @@ defmodule ScadaSubstationsUnrc.Application do
       {DynamicSupervisor, strategy: :one_for_one, name: ScadaSubstationsUnrc.DSupervisor},
       # Launch all the monitors for a chain
       {Task, &ScadaSubstationsUnrc.DSupervisor.start_registered_substation/0},
-      # Starts weather access worker
-      WeatherAccess,
       # Starts Oban job processor
       {Oban, Application.fetch_env!(:scada_substations_unrc, Oban)}
     ]

@@ -1,6 +1,6 @@
-defmodule ScadaSubstationsUnrc.Workers.WeatherAccess do
+defmodule ScadaSubstationsUnrc.Workers.WeatherObanWorker do
   @moduledoc false
-  @max_attempts 2
+  @max_attempts 3
 
   use Oban.Worker,
     max_attempts: @max_attempts
@@ -16,17 +16,24 @@ defmodule ScadaSubstationsUnrc.Workers.WeatherAccess do
   # @weather_uri "http://api.weatherstack.com/current?access_key=e08eb75ade286ed290fbc7a414c6e50c&query=Rio%20Cuarto"
 
   @impl Oban.Worker
+  @spec perform(Oban.Job.t()) ::
+          :ok | {:error, :weather_api_response_decode_error | <<_::64, _::_*8>>}
   def perform(%Oban.Job{
-        args: %{"client_url" => client_url, "access_key" => access_key},
+        args: %{"weather_service_url" => client_url, "access_key" => access_key},
         attempt: attempt
-        # max_attempts: max_attempts
       }) do
     weather_api_endpoint = weather_uri(client_url, access_key)
-    Logger.debug("Polling weather data from #{weather_api_endpoint}, attemp: #{attempt}")
+    Logger.info("Polling weather data from #{weather_api_endpoint}, attemp: #{attempt}")
     poll_weather(weather_api_endpoint, attempt)
   end
 
-  def poll_weather(weather_api_endpoint, attempt) when attempt >= @max_attempts do
+  @impl Oban.Worker
+  def timeout(_job), do: :timer.seconds(30)
+
+  @spec poll_weather(any, any) ::
+          :ok | {:error, :weather_api_response_decode_error | <<_::64, _::_*8>>}
+  def poll_weather(_weather_api_endpoint, attempt) when attempt >= @max_attempts do
+    Logger.error("Polling weather with error, retries exhausted")
     do_save_weather_on_error()
   end
 
@@ -48,14 +55,13 @@ defmodule ScadaSubstationsUnrc.Workers.WeatherAccess do
 
   defp do_process_response(weather_json_response) do
     weather_json_response
-    # {:ok, %{"access_token" => token}} <- Jason.decode(resp_body)
     |> Jason.decode()
     |> do_save_weather
   end
 
   defp do_save_weather({:ok, %{"current" => weather_map}}) do
     Enum.map(weather_map, fn {key, val} -> convert(String.to_atom(key), val) end)
-    |> Map.new()
+    |> IO.inspect(label: "Weather data::")
 
     # |> StorageBind.storage_collected_weather
 
@@ -67,6 +73,7 @@ defmodule ScadaSubstationsUnrc.Workers.WeatherAccess do
   # save weather with 0 when there is a connection error
   defp do_save_weather_on_error do
     # StorageBind.storage_collected_weather(%{humidity: 0, pressure: 0, temp: 0})
+    :ok
   end
 
   @doc """

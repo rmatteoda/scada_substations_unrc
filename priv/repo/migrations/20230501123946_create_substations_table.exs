@@ -8,5 +8,7 @@ defmodule ScadaSubstationsUnrc.Domain.Repo.Migrations.CreateSubstationsTable do
 
       timestamps()
     end
+
+    create unique_index(:substations, [:name])
   end
 end
