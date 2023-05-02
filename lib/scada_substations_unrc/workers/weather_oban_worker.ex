@@ -5,6 +5,8 @@ defmodule ScadaSubstationsUnrc.Workers.WeatherObanWorker do
   use Oban.Worker,
     max_attempts: @max_attempts
 
+  alias ScadaSubstationsUnrc.Domain.WeatherReport
+
   require Logger
 
   # @TODO separeate two clients for each weather api and configure client to use
@@ -61,19 +63,19 @@ defmodule ScadaSubstationsUnrc.Workers.WeatherObanWorker do
 
   defp do_save_weather({:ok, %{"current" => weather_map}}) do
     Enum.map(weather_map, fn {key, val} -> convert(String.to_atom(key), val) end)
-    |> IO.inspect(label: "Weather data::")
+    # |> IO.inspect(label: "Weather data::")
+    |> Map.new()
+    |> WeatherReport.create()
 
-    # |> StorageBind.storage_collected_weather
-
-    :ok
+    # :ok
   end
 
   defp do_save_weather(_other), do: {:error, :weather_api_response_decode_error}
 
   # save weather with 0 when there is a connection error
   defp do_save_weather_on_error do
-    # StorageBind.storage_collected_weather(%{humidity: 0, pressure: 0, temp: 0})
-    :ok
+    WeatherReport.create(%{humidity: 0, pressure: 0, temp: 0})
+    # :ok
   end
 
   @doc """
@@ -83,8 +85,7 @@ defmodule ScadaSubstationsUnrc.Workers.WeatherObanWorker do
     do_convert(k, v)
   end
 
-  defp do_convert(:temp_c, v), do: {:temp, v}
-  defp do_convert(:pressure_mb, v), do: {:pressure, v}
+  defp do_convert(:temperature, v), do: {:temp, v}
   defp do_convert(k, v), do: {k, v}
 
   defp weather_uri(client_uri, access_key),

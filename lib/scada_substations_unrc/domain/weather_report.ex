@@ -2,25 +2,37 @@ defmodule ScadaSubstationsUnrc.Domain.WeatherReport do
   @moduledoc false
   require Logger
 
-  import Ecto.Query
+  import Ecto.Query, warn: false
+
+  alias ScadaSubstationsUnrc.Domain.Repo
+  alias ScadaSubstationsUnrc.Domain.Weather
 
   @doc """
-  Return all weather data from last week
+  Save collected data from weather api http://openweathermap.org
   """
-  def find_weather_data(:all) do
-    # query = from weather in SCADAMaster.Schema.Weather,
-    #     order_by: [asc: :updated_at],
-    #     select: weather
-
-    # ScadaMaster.Repo.all(query, log: false)
+  def create(weather_values \\ %{}) do
+    %Weather{}
+    |> Weather.changeset(weather_values)
+    |> Repo.insert()
   end
 
-  def find_weather_data(:last_week) do
-    # query = from weather in SCADAMaster.Schema.Weather,
-    #     where: weather.inserted_at > datetime_add(^NaiveDateTime.utc_now(), -1, "week"),
-    #     order_by: [asc: :updated_at],
-    #     select: weather
+  @doc """
+  Return all weather data or last week
+  """
+  def get_weather_data(:all) do
+    from(weather in Weather,
+      order_by: [asc: :updated_at],
+      select: weather
+    )
+    |> Repo.all()
+  end
 
-    # ScadaMaster.Repo.all(query, log: false)
+  def get_weather_data(:last_week) do
+    from(weather in Weather,
+      where: weather.inserted_at > datetime_add(^NaiveDateTime.utc_now(), -1, "week"),
+      order_by: [asc: :updated_at],
+      select: weather
+    )
+    |> Repo.all()
   end
 end

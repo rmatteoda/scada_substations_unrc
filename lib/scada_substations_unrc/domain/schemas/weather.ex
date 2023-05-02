@@ -15,9 +15,10 @@ defmodule ScadaSubstationsUnrc.Domain.Weather do
   @required_fields [:humidity, :pressure, :temp]
   @optional_fields [:cloudiness, :wind_speed]
 
-  def changeset(weather, params \\ :empty) do
+  @spec changeset(t(), map()) :: Ecto.Changeset.t()
+  def changeset(weather, params) do
     weather
-    |> cast(params, @required_fields, @optional_fields)
+    |> cast(params, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
   end
 end
