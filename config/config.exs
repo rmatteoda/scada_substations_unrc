@@ -52,12 +52,16 @@ config :scada_substations_unrc, ScadaSubstationsUnrc,
 config :scada_substations_unrc, Oban,
   repo: ScadaSubstationsUnrc.Domain.Repo,
   plugins: [
-    Oban.Plugins.Pruner
-    # {Oban.Plugins.Cron,
-    #  crontab: [
-    #    {"0 * * * *", MyApp.HourlyWorker, args: %{custom: "arg"}},
-    #    {"0 12 * * MON", MyApp.MondayWorker, queue: :scheduled, tags: ["mondays"]}
-    #  ]}
+    Oban.Plugins.Pruner,
+    {Oban.Plugins.Cron,
+     crontab: [
+       {"0 * * * *", ScadaSubstationsUnrc.Workers.WeatherAccess,
+        args: %{
+          access_key: "e08eb75ade286ed290fbc7a414c6e50c",
+          weather_client_url: "http://api.weatherstack.com/current"
+        }}
+       #    {"0 12 * * MON", MyApp.MondayWorker, queue: :scheduled, tags: ["mondays"]}
+     ]}
   ],
   queues: [default: 10]
 
