@@ -6,6 +6,7 @@ defmodule ScadaSubstationsUnrc.DSupervisor do
   require Logger
 
   alias ScadaSubstationsUnrc.Worker.SubstationMonitor
+  alias ScadaSubstationsUnrc.Domain.Substations
 
   @doc """
   """
@@ -26,10 +27,11 @@ defmodule ScadaSubstationsUnrc.DSupervisor do
   """
   @spec start_registered_substation :: :ok
   def start_registered_substation() do
-    # TODO create substation from config table on DB and load from there
-    # load substations from config file and store it if does not exist
-    Application.get_env(:scada_substations_unrc, :device_table)
-    |> Enum.each(fn substation -> start_child(substation) end)
+    substations_list = Application.get_env(:scada_substations_unrc, :device_table)
+    # create substation from config table on DB and load from there
+    Substations.create_config_substations(substations_list)
+    # start a worker to poll measured value for each substation
+    Enum.each(substations_list, fn substation -> start_child(substation) end)
   end
 
   # ----------------------------------------------------------------------------

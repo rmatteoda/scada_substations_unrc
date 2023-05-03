@@ -17,9 +17,9 @@ defmodule ScadaSubstationsUnrc.Domain.WeatherReport do
   end
 
   @doc """
-  Return all weather data or last week
+  Return all weather data
   """
-  def get_weather_data(:all) do
+  def list_all_weather_data() do
     from(weather in Weather,
       order_by: [asc: :updated_at],
       select: weather
@@ -27,7 +27,10 @@ defmodule ScadaSubstationsUnrc.Domain.WeatherReport do
     |> Repo.all()
   end
 
-  def get_weather_data(:last_week) do
+  @doc """
+  Return last week weather data
+  """
+  def list_weather_data_last_week() do
     from(weather in Weather,
       where: weather.inserted_at > datetime_add(^NaiveDateTime.utc_now(), -1, "week"),
       order_by: [asc: :updated_at],

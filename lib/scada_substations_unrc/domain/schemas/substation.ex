@@ -10,6 +10,7 @@ defmodule ScadaSubstationsUnrc.Domain.Substation do
     timestamps()
   end
 
+  @spec changeset(t(), map()) :: Ecto.Changeset.t()
   def changeset(substation, params \\ :empty) do
     substation
     |> cast(params, [:name])
