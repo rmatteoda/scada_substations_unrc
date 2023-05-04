@@ -6,11 +6,11 @@ defmodule ScadaSubstationsUnrc.Worker.SubstationMonitor do
 
   alias ScadaSubstationsUnrc.Worker.PollSubstationWorker
 
-  @default_sleep_hours 24
+  @default_poll_minutes 20
   # initial time to start polling vivo service after init
-  @initial_sleep_time 6_000
+  @initial_poll_time 6_000
   # retry timer if poll fail until retries exausted
-  @retry_sleep_time 60_000
+  @retry_poll_time 60_000
 
   def start_link(args) do
     GenServer.start_link(__MODULE__, args)
@@ -27,14 +27,15 @@ defmodule ScadaSubstationsUnrc.Worker.SubstationMonitor do
   @spec init(keyword()) :: {:ok, map()}
   def init(args) do
     Logger.info("SubstationMonitor init #{inspect(args)}.")
+
     %{
       substation: args[:substation],
-      sleep_time: sleep_time_in_hours(args[:sleep_time]),
+      poll_time: poll_time_in_minutes(args[:poll_time]),
       retries: args[:retries],
       attempt: 0,
       disabled?: args[:disabled?]
     }
-    |> schedule_next_poll(@initial_sleep_time)
+    |> schedule_next_poll(@initial_poll_time)
   end
 
   @impl true
@@ -42,7 +43,7 @@ defmodule ScadaSubstationsUnrc.Worker.SubstationMonitor do
   def handle_info(:do_poll, state) do
     with {:ok, _sub} <- PollSubstationWorker.poll_device(state.substation),
          state <- Map.put(state, :attempt, 0),
-         {:ok, state} <- schedule_next_poll(state, state.sleep_time) do
+         {:ok, state} <- schedule_next_poll(state, state.poll_time) do
       {:noreply, state}
     else
       reason ->
@@ -52,7 +53,7 @@ defmodule ScadaSubstationsUnrc.Worker.SubstationMonitor do
 
         {:ok, state_attempt} =
           Map.update(state, :attempt, 0, fn attempt -> attempt + 1 end)
-          |> schedule_next_poll(@retry_sleep_time)
+          |> schedule_next_poll(@retry_poll_time)
 
         {:noreply, state_attempt}
     end
@@ -60,31 +61,26 @@ defmodule ScadaSubstationsUnrc.Worker.SubstationMonitor do
 
   # if disabled we are not going to schedule poll work
   @spec schedule_next_poll(map(), integer()) :: {:ok, map}
-  defp schedule_next_poll(%{disabled?: true} = state, _sleep_time), do: {:ok, state}
+  defp schedule_next_poll(%{disabled?: true} = state, _poll_time), do: {:ok, state}
 
-  # re-schedule next X hours to do next job after retry exausted
-  defp schedule_next_poll(state, _sleep_time) when state.attempt > state.retries do
+  # re-schedule next X minutes to do next job after retry exausted
+  defp schedule_next_poll(state, _poll_time) when state.attempt > state.retries do
     Logger.warning(
       "[#{__MODULE__}] Pooler retries exhausted when trying to read data from substation"
     )
 
     # reset attempt and schedule with configured sleet time
-    Process.send_after(self(), :do_poll, state.sleep_time)
+    Process.send_after(self(), :do_poll, state.poll_time)
     {:ok, Map.put(state, :attempt, 0)}
   end
 
-  # We schedule the work to happen in X hours (written in milliseconds).
-  defp schedule_next_poll(state, sleep_time) do
-    Process.send_after(self(), :do_poll, sleep_time)
+  # We schedule the work to happen in X minutes (written in milliseconds).
+  defp schedule_next_poll(state, poll_time) do
+    Process.send_after(self(), :do_poll, poll_time)
     {:ok, state}
   end
 
-  # We schedule the work to happen in X hours (written in milliseconds).
-  defp sleep_time_in_hours(sleep_hours) when sleep_hours > 0, do: sleep_hours * 60 * 60 * 1000
-  defp sleep_time_in_hours(_sleep_hours), do: @default_sleep_hours * 60 * 60 * 1000
-
-  # defp poll_time do
-  #   Application.get_env(:scada_master, ScadaSubstationsUnrc)
-  #   |> Keyword.fetch!(:poll_time)
-  # end
+  # We schedule the work to happen in X minutes (written in milliseconds).
+  defp poll_time_in_minutes(minutes) when minutes > 0, do: minutes * 60 * 60 * 1000
+  defp poll_time_in_minutes(_minutes), do: @default_poll_minutes * 60 * 1000
 end

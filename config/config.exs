@@ -28,12 +28,18 @@ config :logger, :console,
 
 # config time for to collect data from substations (recommended 10 minutes)
 config :scada_substations_unrc, ScadaSubstationsUnrc,
-  # 10 minutes
-  poll_time: 10 * 60 * 1000,
   # 2 horas
   report_after: 2 * 60 * 60 * 1000,
   # 10 horas
   report_email_after: 12 * 60 * 60 * 1000
+
+# config SubstationMonitor that will be getting the values from device in each substation
+config :scada_substations_unrc, :monitor,
+  disabled?: false,
+  # sleep time is in minutes, so, the PollScheduller will run each x hours
+  poll_time: 10,
+  # number of retry if the poll server fail
+  retries: 4
 
 # config :scada_substations_unrc, ScadaSubstationsUnrc,
 #   report_path: "/home/unrc/reports/"

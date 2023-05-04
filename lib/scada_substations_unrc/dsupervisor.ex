@@ -17,9 +17,11 @@ defmodule ScadaSubstationsUnrc.DSupervisor do
       "[#{__MODULE__}.start_child/1] Launching Monitor for Substation #{substation.name}"
     )
 
+    opts = substation_monitor_config()
+
     DynamicSupervisor.start_child(
       __MODULE__,
-      {SubstationMonitor, substation: substation}
+      {SubstationMonitor, [substation: substation] ++ opts}
     )
   end
 
@@ -59,5 +61,9 @@ defmodule ScadaSubstationsUnrc.DSupervisor do
            }}
   def init(_init_args) do
     DynamicSupervisor.init(strategy: :one_for_one)
+  end
+
+  defp substation_monitor_config do
+    Application.fetch_env!(:scada_substations_unrc, :monitor)
   end
 end
