@@ -18,24 +18,17 @@ defmodule ScadaSubstationsUnrc.Worker.PollSubstationWorker do
 
   # Read sempron register using ex_modbus library
   defp do_read_registers(substation_ip, substation_name) do
-    with {pid, status} <- do_connect(substation_ip) do
-      # TODO return error or retry if not connected status?
-      do_read_modbus(pid, substation_name, status)
-    end
-
-    # if ( status != :connected) do
-    #   Logger.debug "Reconnecting to #{substation_ip}"
-    #   {pid, status} = do_connect(substation_ip)
-    # end
+    {pid, connected_status} = do_connect(substation_ip)
+    do_read_modbus(pid, substation_name, connected_status)
   end
 
   # buid register map from struc for substation with all offsets and register key defined
   # iterate over map to read all registers
-  defp do_read_modbus(pid, substation_name, status) do
+  defp do_read_modbus(pid, substation_name, connected_status) do
     substationdata =
       Map.from_struct(ScadaSubstationsUnrc.Domain.MeasureStruct)
       |> Map.new(fn {key, val} ->
-        {:ok, val} = do_read_register(pid, val, status)
+        {:ok, val} = do_read_register(pid, val, connected_status)
         {key, val}
       end)
 
@@ -55,7 +48,6 @@ defmodule ScadaSubstationsUnrc.Worker.PollSubstationWorker do
     try do
       response = ExModbus.Client.read_data(pid, 1, register_offset, 2)
       {:read_holding_registers, [modbus_reg_1, modbus_reg_2]} = Map.get(response, :data)
-      # [modbus_reg_1, modbus_reg_2] = [17249, 886]
 
       float_byte1 = modbus_reg_1 |> :binary.encode_unsigned() |> Base.encode16()
       float_byte2 = modbus_reg_2 |> :binary.encode_unsigned() |> Base.encode16()
@@ -70,7 +62,7 @@ defmodule ScadaSubstationsUnrc.Worker.PollSubstationWorker do
     end
   end
 
-  # Create default map with values on connection error (nodbus status off)
+  # Create default map with values on connection error (nodbus status not conected)
   defp do_read_register(_pid, _register_offset, :failed_connect) do
     {:ok, 0.0}
   end

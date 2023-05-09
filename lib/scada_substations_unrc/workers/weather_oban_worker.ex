@@ -63,7 +63,6 @@ defmodule ScadaSubstationsUnrc.Workers.WeatherObanWorker do
 
   defp do_save_weather({:ok, %{"current" => weather_map}}) do
     Enum.map(weather_map, fn {key, val} -> convert(String.to_atom(key), val) end)
-    # |> IO.inspect(label: "Weather data::")
     |> Map.new()
     |> WeatherReport.create()
 

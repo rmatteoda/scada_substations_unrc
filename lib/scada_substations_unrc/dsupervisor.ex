@@ -31,7 +31,7 @@ defmodule ScadaSubstationsUnrc.DSupervisor do
   def start_registered_substation() do
     substations_list = Application.get_env(:scada_substations_unrc, :device_table)
     # create substation from config table on DB and load from there
-    Substations.create_config_substations(substations_list)
+    Substations.add_substations(substations_list)
     # start a worker to poll measured value for each substation
     Enum.each(substations_list, fn substation -> start_child(substation) end)
   end
