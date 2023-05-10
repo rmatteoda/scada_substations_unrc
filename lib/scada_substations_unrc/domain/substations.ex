@@ -8,6 +8,8 @@ defmodule ScadaSubstationsUnrc.Domain.Substations do
   alias ScadaSubstationsUnrc.Domain.Substation
   alias ScadaSubstationsUnrc.Domain.MeasuredValues
 
+  # TODO add methods to delete, update and disabled a substation
+
   def create_substation(substation_name) do
     %Substation{}
     |> Substation.changeset(%{name: substation_name})
@@ -41,7 +43,6 @@ defmodule ScadaSubstationsUnrc.Domain.Substations do
   Save collected data from substation into measured_values table
   """
   def storage_collected_data(collected_values) do
-    IO.inspect(collected_values, label: "collected values::")
     %MeasuredValues{}
     |> MeasuredValues.changeset(collected_values)
     |> Repo.insert()

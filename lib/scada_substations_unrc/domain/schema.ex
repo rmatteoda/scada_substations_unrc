@@ -10,7 +10,7 @@ defmodule ScadaSubstationsUnrc.Domain.Schema do
 
       @timestamps_opts [type: :utc_datetime]
       @primary_key {:id, :binary_id, autogenerate: true}
-      @foreign_key :binary_id
+      @foreign_key_type :binary_id
       @type t :: %__MODULE__{}
     end
   end
