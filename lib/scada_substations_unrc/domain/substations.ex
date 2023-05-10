@@ -41,6 +41,7 @@ defmodule ScadaSubstationsUnrc.Domain.Substations do
   Save collected data from substation into measured_values table
   """
   def storage_collected_data(collected_values) do
+    IO.inspect(collected_values, label: "collected values::")
     %MeasuredValues{}
     |> MeasuredValues.changeset(collected_values)
     |> Repo.insert()

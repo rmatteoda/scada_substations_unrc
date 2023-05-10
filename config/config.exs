@@ -64,6 +64,7 @@ config :scada_substations_unrc, Oban,
        # Configure oban cron job to run each hour
        {"0 * * * *", ScadaSubstationsUnrc.Workers.WeatherObanWorker,
         args: %{
+          client: ScadaSubstationsUnrc.Clients.WeatherStackClient,
           weather_service_url: "http://api.weatherstack.com/current",
           access_key: "e08eb75ade286ed290fbc7a414c6e50c"
         }}
