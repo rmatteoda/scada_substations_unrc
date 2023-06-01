@@ -41,8 +41,7 @@ config :scada_substations_unrc, :monitor,
   # number of retry if the poll server fail
   retries: 4
 
-# config :scada_substations_unrc, ScadaSubstationsUnrc,
-#   report_path: "/home/unrc/reports/"
+config :scada_substations_unrc, ScadaSubstationsUnrc, report_path: "/home/unrc/reports/"
 
 # Config Email Adapter
 # config :scada_substations_unrc, SCADAMaster.Schema.Mailer,

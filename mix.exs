@@ -43,6 +43,7 @@ defmodule ScadaSubstationsUnrc.MixProject do
       {:elixir_uuid, "~> 1.2"},
       {:httpoison, "~> 1.8"},
       {:tesla, "~> 1.4"},
+      {:csvlixir, "~> 2.0.3"},
 
       # Code quality and testing
       {:credo, "~> 1.6", runtime: false},

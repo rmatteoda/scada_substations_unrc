@@ -8,8 +8,6 @@ defmodule ScadaSubstationsUnrc.Domain.Substations do
   alias ScadaSubstationsUnrc.Domain.Substation
   alias ScadaSubstationsUnrc.Domain.MeasuredValues
 
-  # TODO add methods to delete, update and disabled a substation
-
   def create_substation(substation_name) do
     %Substation{}
     |> Substation.changeset(%{name: substation_name})
@@ -37,6 +35,34 @@ defmodule ScadaSubstationsUnrc.Domain.Substations do
       nil ->
         {:error, :substation_not_found}
     end
+  end
+
+  @spec list :: [Substation.t()]
+  def list do
+    Repo.all(Substation)
+  end
+
+  @spec update(substation :: Substation.t(), attrs :: map) ::
+          {:ok, Substation.t()} | {:error, Ecto.Changeset.t()}
+  def update(%Substation{} = substation, attrs) do
+    substation
+    |> Substation.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @spec delete_by_name(String.t()) ::
+          {:ok, Substation.t()} | {:error, Ecto.Changeset.t() | :substation_not_found}
+  def delete_by_name(substation_name) do
+    case get_substation_by_name(substation_name) do
+      {:ok, substation} -> delete(substation)
+      {:error, :substation_not_found} -> {:error, :substation_not_found}
+    end
+  end
+
+  @spec delete(substation :: Substation.t()) ::
+          {:ok, Substation.t()} | {:error, Ecto.Changeset.t()}
+  def delete(%Substation{} = substation) do
+    Repo.delete(substation)
   end
 
   @doc """
