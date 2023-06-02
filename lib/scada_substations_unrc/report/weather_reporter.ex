@@ -8,13 +8,10 @@ defmodule ScadaSubstationsUnrc.Report.WeatherReporter do
   # column names array for reports
   @weather_header ["Temperatura", "Presion", "Humedad", "Date"]
 
-  @doc """
-  for each substation report into a csv file data collected for last week
-  """
   def dump_weekly_report() do
     file_name = Path.join(report_path(), "weather_last_week.csv")
 
-    WeatherReport.list_all_weather_data()
+    WeatherReport.list_weather_data_last_week()
     |> dump_to_csv(file_name)
   end
 
@@ -22,7 +19,6 @@ defmodule ScadaSubstationsUnrc.Report.WeatherReporter do
 
   defp dump_to_csv(weather_data, file_name) do
     f = File.open!(file_name, [:write, :utf8])
-    IO.inspect(f, label: "DUMP weather_data:::")
     IO.write(f, CSVLixir.write_row(@weather_header))
 
     Enum.each(weather_data, fn weather ->
@@ -41,7 +37,7 @@ defmodule ScadaSubstationsUnrc.Report.WeatherReporter do
   end
 
   defp report_path do
-    Application.get_env(:scada_substations_unrc, ScadaMaster)
+    Application.get_env(:scada_substations_unrc, ScadaSubstationsUnrc)
     |> Keyword.fetch!(:report_path)
   end
 end

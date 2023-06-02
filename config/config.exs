@@ -45,20 +45,13 @@ config :scada_substations_unrc, Oban,
     {Oban.Plugins.Cron,
      crontab: [
        # Configure oban cron job to run each hour
-       {"* * * * *", ScadaSubstationsUnrc.Workers.WeatherObanWorker,
+       {"0 * * * *", ScadaSubstationsUnrc.Workers.WeatherObanWorker,
         args: %{
           client: ScadaSubstationsUnrc.Clients.WeatherStackClient,
           weather_service_url: "http://api.weatherstack.com/current",
           access_key: "e08eb75ade286ed290fbc7a414c6e50c"
         }},
-       {"* * * * *", ScadaSubstationsUnrc.Workers.ReportsObanWorker,
-        args: %{
-          client: ScadaSubstationsUnrc.Report.SubstationReporter
-        }},
-       {"* * * * *", ScadaSubstationsUnrc.Workers.ReportsObanWorker,
-        args: %{
-          client: ScadaSubstationsUnrc.Report.WeatherReport
-        }}
+       {"0 * * * *", ScadaSubstationsUnrc.Workers.ReportsObanWorker}
      ]}
   ],
   queues: [default: 10]

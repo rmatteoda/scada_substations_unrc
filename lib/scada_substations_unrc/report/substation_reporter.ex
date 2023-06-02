@@ -39,7 +39,6 @@ defmodule ScadaSubstationsUnrc.Report.SubstationReporter do
 
   defp dump_report(substation) do
     Substations.collected_data_in_last_week(substation.id)
-    IO.inspect(label: "DUMP substation_data:::")
     |> dump_to_csv(substation.name, "_last_week.csv")
   end
 
@@ -48,7 +47,6 @@ defmodule ScadaSubstationsUnrc.Report.SubstationReporter do
   defp dump_to_csv(substation_data, substation_name, end_filename) do
     file_name = Path.join(report_path(), substation_name <> end_filename)
     f = File.open!(file_name, [:write, :utf8])
-    IO.inspect(file_name, label: "DUMP file_name:::")
 
     IO.write(f, CSVLixir.write_row(@meassured_header))
 
@@ -82,7 +80,7 @@ defmodule ScadaSubstationsUnrc.Report.SubstationReporter do
   end
 
   defp report_path do
-    Application.get_env(:scada_substations_unrc, ScadaMaster)
+    Application.get_env(:scada_substations_unrc, ScadaSubstationsUnrc)
     |> Keyword.fetch!(:report_path)
   end
 end

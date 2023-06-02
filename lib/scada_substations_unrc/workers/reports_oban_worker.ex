@@ -7,16 +7,23 @@ defmodule ScadaSubstationsUnrc.Workers.ReportsObanWorker do
 
   require Logger
 
+  alias ScadaSubstationsUnrc.Report.SubstationReporter
+  alias ScadaSubstationsUnrc.Report.WeatherReporter
+
   @impl Oban.Worker
   @spec perform(Oban.Job.t()) ::
           :ok | {:error, any()}
   def perform(%Oban.Job{
-        args: %{"client" => client_module}
+        args: _args
       }) do
+    Logger.info("Report worker start to dump csv reports with data from last week")
+    # generate csv file report of measured values for each substation
+    SubstationReporter.dump_weekly_report()
+
+    # generate csv file report of weather data
+    WeatherReporter.dump_weekly_report()
+
     # email reports?
-    # Logger.info("Report worker, attemp: #{attempt}")
-    String.to_existing_atom(client_module)
-    |> apply(:dump_weekly_report, [])
   end
 
   @impl Oban.Worker
