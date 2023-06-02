@@ -14,7 +14,7 @@ defmodule ScadaSubstationsUnrc.Report.WeatherReporter do
   def dump_weekly_report() do
     file_name = Path.join(report_path(), "weather_last_week.csv")
 
-    WeatherReport.list_weather_data_last_week()
+    WeatherReport.list_all_weather_data()
     |> dump_to_csv(file_name)
   end
 
@@ -22,6 +22,7 @@ defmodule ScadaSubstationsUnrc.Report.WeatherReporter do
 
   defp dump_to_csv(weather_data, file_name) do
     f = File.open!(file_name, [:write, :utf8])
+    IO.inspect(f, label: "DUMP weather_data:::")
     IO.write(f, CSVLixir.write_row(@weather_header))
 
     Enum.each(weather_data, fn weather ->

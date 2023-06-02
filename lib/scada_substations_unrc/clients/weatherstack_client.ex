@@ -31,6 +31,8 @@ defmodule ScadaSubstationsUnrc.Clients.WeatherStackClient do
   end
 
   defp do_save_weather({:ok, %{"current" => weather_map}}) do
+    # IO.inspect(weather_map, label: "save weather weather_map::")
+
     Enum.map(weather_map, fn {key, val} -> convert(String.to_atom(key), val) end)
     |> Map.new()
     |> WeatherReport.create()

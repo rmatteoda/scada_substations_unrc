@@ -5,22 +5,18 @@ defmodule ScadaSubstationsUnrc.Workers.ReportsObanWorker do
   use Oban.Worker,
     max_attempts: @max_attempts
 
-  # alias ScadaSubstationsUnrc.Domain.WeatherReport
-
   require Logger
 
   @impl Oban.Worker
   @spec perform(Oban.Job.t()) ::
           :ok | {:error, any()}
   def perform(%Oban.Job{
-        args: %{"report_type" => _type},
-        attempt: attempt
+        args: %{"client" => client_module}
       }) do
-    # TODO add config and generate reports
-    # csv file weekly reports for each substation
-    # csv file weekly reports with weather data
     # email reports?
-    Logger.info("Report worker, attemp: #{attempt}")
+    # Logger.info("Report worker, attemp: #{attempt}")
+    String.to_existing_atom(client_module)
+    |> apply(:dump_weekly_report, [])
   end
 
   @impl Oban.Worker

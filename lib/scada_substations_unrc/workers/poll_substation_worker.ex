@@ -8,7 +8,7 @@ defmodule ScadaSubstationsUnrc.Worker.PollSubstationWorker do
   def poll_device(%{ip: substation_ip, name: substation_name} = _substation) do
     case do_read_registers(substation_ip, substation_name) do
       {:ok, collected_values} ->
-        # TODO fix this save
+        # IO.inspect(collected_values, label: "save collected_values::")
         Substations.storage_collected_data(collected_values)
         {:ok, collected_values}
 
