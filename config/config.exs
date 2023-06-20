@@ -10,10 +10,10 @@ config :scada_substations_unrc,
 
 # configure ip of diferent device connected to substation to be monitored.
 config :scada_substations_unrc, :device_table, [
-  %{ip: "192.168.0.5", name: "sub_anf"},
-  %{ip: "192.168.0.6", name: "sub_jardin"},
-  %{ip: "192.168.0.7", name: "sub_arte"},
-  %{ip: "192.168.0.9", name: "sub_biblio"}
+  %{ip: "192.168.0.5", name: "sub_anf", disabled: false},
+  %{ip: "192.168.0.6", name: "sub_jardin", disabled: false},
+  %{ip: "192.168.0.7", name: "sub_arte", disabled: false},
+  %{ip: "192.168.0.9", name: "sub_biblio", disabled: false}
 ]
 
 # Configures Elixir's Logger
@@ -32,7 +32,7 @@ config :scada_substations_unrc, ScadaSubstationsUnrc,
 # config SubstationMonitor that will be getting the values from device in each substation
 config :scada_substations_unrc, :monitor,
   disabled?: false,
-  # sleep time is in minutes, so, the PollScheduller will run each x hours
+  # sleep time is in minutes, so, the PollScheduller will run each x minutes
   poll_time: 10,
   # number of retry if the poll server fail
   retries: 4

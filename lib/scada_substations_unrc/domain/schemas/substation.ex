@@ -11,7 +11,7 @@ defmodule ScadaSubstationsUnrc.Domain.Substation do
   end
 
   @spec changeset(t(), map()) :: Ecto.Changeset.t()
-  def changeset(substation, params \\ :empty) do
+  def changeset(substation, params) do
     substation
     |> cast(params, [:name])
     |> validate_required(:name)

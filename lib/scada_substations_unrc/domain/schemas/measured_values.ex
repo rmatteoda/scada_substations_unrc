@@ -29,7 +29,6 @@ defmodule ScadaSubstationsUnrc.Domain.MeasuredValues do
   end
 
   @required_fields [
-    :id,
     :voltage_a,
     :voltage_b,
     :voltage_c,
@@ -51,7 +50,7 @@ defmodule ScadaSubstationsUnrc.Domain.MeasuredValues do
   @optional_fields []
 
   @spec changeset(t(), map()) :: Ecto.Changeset.t()
-  def changeset(measured_value, params \\ :empty) do
+  def changeset(measured_value, params) do
     measured_value
     |> cast(params, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)

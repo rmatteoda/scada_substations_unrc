@@ -3,7 +3,8 @@ defmodule ScadaSubstationsUnrc.Domain.Repo.Migrations.CreateMeasuredValuesTable 
 
   def change do
     # measured_values belong to a substation
-    create table(:measured_values) do
+    create table(:measured_values, primary_key: false) do
+      add(:id, :binary_id, primary_key: true)
       add(:substation_id, :uuid)
       add :voltage_a,   :float
       add :voltage_b,   :float

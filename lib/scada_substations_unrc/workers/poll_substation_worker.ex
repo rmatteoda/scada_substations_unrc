@@ -6,12 +6,10 @@ defmodule ScadaSubstationsUnrc.Worker.PollSubstationWorker do
   alias ScadaSubstationsUnrc.Domain.Substations
 
   def poll_device(%{ip: substation_ip, name: substation_name} = _substation) do
-    case do_read_registers(substation_ip, substation_name) do
-      {:ok, collected_values} ->
-        # IO.inspect(collected_values, label: "save collected_values::")
-        Substations.storage_collected_data(collected_values)
-        {:ok, collected_values}
-
+    with {:ok, substation} <- Substations.get_substation_by_name(substation_name),
+         {:ok, collected_values} <- do_read_registers(substation_ip, substation) do
+      Substations.storage_collected_data(substation, collected_values)
+    else
       {:error, reason} ->
         Logger.error("Error poll device: #{inspect(reason)}")
         {:error, reason}
@@ -19,29 +17,23 @@ defmodule ScadaSubstationsUnrc.Worker.PollSubstationWorker do
   end
 
   # Read sempron register using ex_modbus library
-  defp do_read_registers(substation_ip, substation_name) do
+  defp do_read_registers(substation_ip, substation) do
     {pid, connected_status} = do_connect(substation_ip)
-    do_read_modbus(pid, substation_name, connected_status)
+    do_read_modbus(pid, substation, connected_status)
   end
 
   # buid register map from struc for substation with all offsets and register key defined
   # iterate over map to read all registers
-  defp do_read_modbus(pid, substation_name, connected_status) do
-    substationdata =
+  defp do_read_modbus(pid, substation, connected_status) do
+    substation_values =
       Map.from_struct(ScadaSubstationsUnrc.Domain.MeasureStruct)
       |> Map.new(fn {key, val} ->
         {:ok, val} = do_read_register(pid, val, connected_status)
         {key, val}
       end)
+      |> Map.put(:substation_id, substation.id)
 
-    case Substations.get_substation_by_name(substation_name) do
-      {:error, _error} ->
-        {:error, "Substation not found in DB to save collected data"}
-
-      {:ok, sub} ->
-        substation_values = Map.put(substationdata, :substation_id, sub.id)
-        {:ok, substation_values}
-    end
+    {:ok, substation_values}
   end
 
   # Read modbus register using the pid of the connection, register offset
@@ -59,7 +51,7 @@ defmodule ScadaSubstationsUnrc.Worker.PollSubstationWorker do
       {:ok, float_val}
     rescue
       e ->
-        Logger.error("exception on read_register: " <> e)
+        Logger.error("exception on read_register: #{inspect(e)}")
         {:ok, 0.0}
     end
   end

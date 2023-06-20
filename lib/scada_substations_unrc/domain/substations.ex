@@ -68,9 +68,11 @@ defmodule ScadaSubstationsUnrc.Domain.Substations do
   @doc """
   Save collected data from substation into measured_values table
   """
-  def storage_collected_data(collected_values) do
+  def storage_collected_data(substation, collected_values) do
+    collected_for = Map.put(collected_values, :substation_id, substation.id)
+
     %MeasuredValues{}
-    |> MeasuredValues.changeset(collected_values)
+    |> MeasuredValues.changeset(collected_for)
     |> Repo.insert()
   end
 

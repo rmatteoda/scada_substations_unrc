@@ -26,14 +26,15 @@ defmodule ScadaSubstationsUnrc.Worker.SubstationMonitor do
   @impl true
   @spec init(keyword()) :: {:ok, map()}
   def init(args) do
-    Logger.info("SubstationMonitor init #{inspect(args)}.")
+    substation = args[:substation]
+    Logger.info("SubstationMonitor init #{inspect(substation)}.")
 
     %{
-      substation: args[:substation],
+      substation: substation,
       poll_time: poll_time_in_minutes(args[:poll_time]),
       retries: args[:retries],
       attempt: 0,
-      disabled?: args[:disabled?]
+      disabled?: args[:disabled?] || substation[:disabled]
     }
     |> schedule_next_poll(@initial_poll_time)
   end
@@ -41,7 +42,7 @@ defmodule ScadaSubstationsUnrc.Worker.SubstationMonitor do
   @impl true
   @spec handle_info(:do_poll, map) :: {:noreply, map}
   def handle_info(:do_poll, state) do
-    with {:ok, _sub} <- PollSubstationWorker.poll_device(state.substation),
+    with {:ok, _measured_values} <- PollSubstationWorker.poll_device(state.substation),
          state <- Map.put(state, :attempt, 0),
          {:ok, state} <- schedule_next_poll(state, state.poll_time) do
       {:noreply, state}
@@ -76,11 +77,12 @@ defmodule ScadaSubstationsUnrc.Worker.SubstationMonitor do
 
   # We schedule the work to happen in X minutes (written in milliseconds).
   defp schedule_next_poll(state, poll_time) do
+    Logger.info("[#{__MODULE__}.schedule_next_poll] Schedule next in #{poll_time}")
     Process.send_after(self(), :do_poll, poll_time)
     {:ok, state}
   end
 
   # We schedule the work to happen in X minutes (written in milliseconds).
-  defp poll_time_in_minutes(minutes) when minutes > 0, do: minutes * 60 * 60 * 1000
+  defp poll_time_in_minutes(minutes) when minutes > 0, do: minutes * 60 * 1000
   defp poll_time_in_minutes(_minutes), do: @default_poll_minutes * 60 * 1000
 end
