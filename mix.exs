@@ -46,9 +46,10 @@ defmodule ScadaSubstationsUnrc.MixProject do
       {:csvlixir, "~> 2.0.3"},
 
       # Code quality and testing
-      {:credo, "~> 1.6", runtime: false},
-      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:ex_doc, "~> 0.28", only: :dev, runtime: false},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:styler, "~> 0.7", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
 
       # Tesla adapter
       {:hackney, "~> 1.18"}

@@ -2,6 +2,16 @@
 
 **TODO: Add description**
 
+# TODO
+- Add Logger info and error 
+- Generate script for startup like cron
+- Generate script for migrate DB
+- Generate report by email
+- Logger to file 
+- Search another option for modbus lib
+- Test in UNRC
+- Add api to access data using main module
+- Add credo, styler and dialyzer
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
