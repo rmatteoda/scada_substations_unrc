@@ -4,9 +4,9 @@ defmodule ScadaSubstationsUnrc.Domain.Substations do
 
   import Ecto.Query, warn: false
 
+  alias ScadaSubstationsUnrc.Domain.MeasuredValues
   alias ScadaSubstationsUnrc.Domain.Repo
   alias ScadaSubstationsUnrc.Domain.Substation
-  alias ScadaSubstationsUnrc.Domain.MeasuredValues
 
   def create_substation(substation_name) do
     %Substation{}

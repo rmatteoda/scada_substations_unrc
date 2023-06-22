@@ -135,7 +135,7 @@ defmodule Modbus.Packet do
     {:ok, {:write_single_coil_exception, exception_code(exception)}}
   end
 
-  def parse_response_packet(packet = <<function_code, _byte_count, _data::binary>>) do
+  def parse_response_packet(<<function_code, _byte_count, _data::binary>> = packet) do
     {:error, "Unknown function code #{function_code}, pkt = #{inspect(packet)}"}
   end
 end

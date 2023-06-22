@@ -4,14 +4,17 @@
 
 # TODO
 - Add Logger info and error 
-- Generate script for startup like cron
-- Generate script for migrate DB
-- Generate report by email
 - Logger to file 
-- Search another option for modbus lib
-- Test in UNRC
+- Add make file like FOSS
+- Configure script to run on startup (start_scada.sh)
+- Test in UNRC PC
+- migrate DB from one pc to new version
+  - https://www.postgresql.org/docs/9.0/migration.html
+  - https://stackoverflow.com/questions/1237725/copying-postgresql-database-to-another-server
 - Add api to access data using main module
-- Add credo, styler and dialyzer
+- Generate report by email
+- Search another option for modbus lib
+
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed

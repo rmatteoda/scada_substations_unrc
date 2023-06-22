@@ -6,13 +6,13 @@ defmodule ExModbus.Client do
   use GenServer
   require Logger
 
-  @read_timeout 10000
+  @read_timeout 10_000
 
   # Public Interface
 
-  def start_link(ip = {_a, _b, _c, _d}), do: start_link(%{ip: ip})
+  def start_link({_a, _b, _c, _d} = ip), do: start_link(%{ip: ip})
 
-  def start_link(args = %{ip: _ip}) do
+  def start_link(%{ip: _ip} = args) do
     GenServer.start_link(__MODULE__, args)
   end
 

@@ -42,8 +42,8 @@ defmodule ScadaSubstationsUnrc.Workers.WeatherObanWorker do
   Call api to get weather info of Rio Cuarto using weatherstack API
   """
   def poll_weather(client, client_url, access_key, _attempt) do
-    String.to_existing_atom(client)
-    |> apply(:poll_weather, [client_url, access_key])
+    String.to_existing_atom(client).poll_weather(client_url, access_key)
+    # |> apply(:poll_weather, [client_url, access_key])
   end
 
   # save weather with 0 when there is a connection error

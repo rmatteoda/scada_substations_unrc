@@ -30,7 +30,7 @@ defmodule ScadaSubstationsUnrc.Report.SubstationReporter do
   @doc """
   for each substation report into a csv file data collected for last week
   """
-  def dump_weekly_report() do
+  def dump_weekly_report do
     Substations.list()
     |> Enum.each(fn substation ->
       dump_report(substation)

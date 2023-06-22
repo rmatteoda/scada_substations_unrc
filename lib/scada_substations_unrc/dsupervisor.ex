@@ -5,8 +5,8 @@ defmodule ScadaSubstationsUnrc.DSupervisor do
 
   require Logger
 
-  alias ScadaSubstationsUnrc.Worker.SubstationMonitor
   alias ScadaSubstationsUnrc.Domain.Substations
+  alias ScadaSubstationsUnrc.Worker.SubstationMonitor
 
   @doc """
   """
@@ -28,7 +28,7 @@ defmodule ScadaSubstationsUnrc.DSupervisor do
   @doc """
   """
   @spec start_registered_substation :: :ok
-  def start_registered_substation() do
+  def start_registered_substation do
     substations_list = Application.get_env(:scada_substations_unrc, :device_table)
     # create substation from config table on DB and load from there
     Substations.add_substations(substations_list)

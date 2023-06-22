@@ -8,7 +8,7 @@ defmodule ScadaSubstationsUnrc.Report.WeatherReporter do
   # column names array for reports
   @weather_header ["Temperatura", "Presion", "Humedad", "Date"]
 
-  def dump_weekly_report() do
+  def dump_weekly_report do
     file_name = Path.join(report_path(), "weather_last_week.csv")
 
     WeatherReport.list_weather_data_last_week()

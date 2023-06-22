@@ -1,5 +1,5 @@
 defmodule ScadaSubstationsUnrc.Domain.MeasureStruct do
-  @doc """
+  @moduledoc """
   Define struct for senpron with register keys and offset to read using modbus
   """
   defstruct voltage_a: 1,

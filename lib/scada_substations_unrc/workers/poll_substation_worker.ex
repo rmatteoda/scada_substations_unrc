@@ -39,21 +39,19 @@ defmodule ScadaSubstationsUnrc.Worker.PollSubstationWorker do
   # Read modbus register using the pid of the connection, register offset
   defp do_read_register(pid, register_offset, :connected) do
     # Logger.debug "Reading register on MODBUS "
-    try do
-      response = ExModbus.Client.read_data(pid, 1, register_offset, 2)
-      {:read_holding_registers, [modbus_reg_1, modbus_reg_2]} = Map.get(response, :data)
+    response = ExModbus.Client.read_data(pid, 1, register_offset, 2)
+    {:read_holding_registers, [modbus_reg_1, modbus_reg_2]} = Map.get(response, :data)
 
-      float_byte1 = modbus_reg_1 |> :binary.encode_unsigned() |> Base.encode16()
-      float_byte2 = modbus_reg_2 |> :binary.encode_unsigned() |> Base.encode16()
+    float_byte1 = modbus_reg_1 |> :binary.encode_unsigned() |> Base.encode16()
+    float_byte2 = modbus_reg_2 |> :binary.encode_unsigned() |> Base.encode16()
 
-      <<float_val::size(32)-float>> = Base.decode16!(float_byte1 <> float_byte2)
+    <<float_val::size(32)-float>> = Base.decode16!(float_byte1 <> float_byte2)
 
-      {:ok, float_val}
-    rescue
-      e ->
-        Logger.error("exception on read_register: #{inspect(e)}")
-        {:ok, 0.0}
-    end
+    {:ok, float_val}
+  rescue
+    e ->
+      Logger.error("exception on read_register: #{inspect(e)}")
+      {:ok, 0.0}
   end
 
   # Create default map with values on connection error (nodbus status not conected)
