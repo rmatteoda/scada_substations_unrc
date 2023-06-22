@@ -17,16 +17,25 @@ config :scada_substations_unrc, :device_table, [
 ]
 
 # Configures Elixir's Logger
-config :logger, :console,
-  format: "$time $metadata[$level] $message\n",
-  metadata: []
+config :logger, :console, format: "$time $metadata[$level] $message\n"
+
+# logger configuration
+config :logger,
+  backends: [{LoggerFileBackend, :debug_log}, {LoggerFileBackend, :error_log}]
+
+config :logger, :debug_log,
+  path: "log/debug.log",
+  level: :debug
+
+config :logger, :error_log,
+  path: "log/error.log",
+  level: :error
 
 # config time for to collect data from substations (recommended 10 minutes)
 config :scada_substations_unrc, ScadaSubstationsUnrc,
   # 2 horas
   report_after: 2 * 60 * 60 * 1000,
   # 10 horas
-  # report_email_after: 12 * 60 * 60 * 1000,
   report_path: "/home/ramiro/Documents/UNRC/scada_substations_unrc/tmp"
 
 # config SubstationMonitor that will be getting the values from device in each substation

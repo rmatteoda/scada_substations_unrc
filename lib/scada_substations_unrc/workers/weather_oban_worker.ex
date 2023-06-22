@@ -34,7 +34,7 @@ defmodule ScadaSubstationsUnrc.Workers.WeatherObanWorker do
           :ok | {:error, :weather_api_response_decode_error | <<_::64, _::_*8>>}
   def poll_weather(_client_module, _client_url, _access_key, attempt)
       when attempt >= @max_attempts do
-    Logger.error("Polling weather with error, retries exhausted")
+    Logger.error("Polling weather with error, retries exhausted. Saving 0 values for weather")
     do_save_weather_on_error()
   end
 
@@ -43,7 +43,6 @@ defmodule ScadaSubstationsUnrc.Workers.WeatherObanWorker do
   """
   def poll_weather(client, client_url, access_key, _attempt) do
     String.to_existing_atom(client).poll_weather(client_url, access_key)
-    # |> apply(:poll_weather, [client_url, access_key])
   end
 
   # save weather with 0 when there is a connection error

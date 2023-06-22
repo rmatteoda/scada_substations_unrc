@@ -3,15 +3,13 @@
 **TODO: Add description**
 
 # TODO
-- Add Logger info and error 
 - Logger to file 
-- Add make file like FOSS
-- Configure script to run on startup (start_scada.sh)
 - Test in UNRC PC
+- Add api to access data using main module
 - migrate DB from one pc to new version
   - https://www.postgresql.org/docs/9.0/migration.html
   - https://stackoverflow.com/questions/1237725/copying-postgresql-database-to-another-server
-- Add api to access data using main module
+- Configure script to run on startup (start_scada.sh)
 - Generate report by email
 - Search another option for modbus lib
 

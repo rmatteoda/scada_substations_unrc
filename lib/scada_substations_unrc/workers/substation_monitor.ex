@@ -27,7 +27,7 @@ defmodule ScadaSubstationsUnrc.Worker.SubstationMonitor do
   @spec init(keyword()) :: {:ok, map()}
   def init(args) do
     substation = args[:substation]
-    Logger.info("SubstationMonitor init #{inspect(substation)}.")
+    Logger.info("[#{__MODULE__}].init with params #{inspect(substation)}.")
 
     %{
       substation: substation,
@@ -67,7 +67,7 @@ defmodule ScadaSubstationsUnrc.Worker.SubstationMonitor do
   # re-schedule next X minutes to do next job after retry exausted
   defp schedule_next_poll(state, _poll_time) when state.attempt > state.retries do
     Logger.warning(
-      "[#{__MODULE__}] Pooler retries exhausted when trying to read data from substation"
+      "[#{__MODULE__}] Pooler retries exhausted when trying to read data from substation #{inspect(state)}"
     )
 
     # reset attempt and schedule with configured sleet time
@@ -77,7 +77,6 @@ defmodule ScadaSubstationsUnrc.Worker.SubstationMonitor do
 
   # We schedule the work to happen in X minutes (written in milliseconds).
   defp schedule_next_poll(state, poll_time) do
-    Logger.info("[#{__MODULE__}.schedule_next_poll] Schedule next in #{poll_time}")
     Process.send_after(self(), :do_poll, poll_time)
     {:ok, state}
   end

@@ -16,7 +16,7 @@ defmodule ScadaSubstationsUnrc.Workers.ReportsObanWorker do
   def perform(%Oban.Job{
         args: _args
       }) do
-    Logger.info("Report worker start to dump csv reports with data from last week")
+    Logger.info("Report worker run to dump csv reports with data from last week")
     # generate csv file report of measured values for each substation
     SubstationReporter.dump_weekly_report()
 

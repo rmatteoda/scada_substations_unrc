@@ -11,7 +11,7 @@ defmodule ScadaSubstationsUnrc.Worker.PollSubstationWorker do
       Substations.storage_collected_data(substation, collected_values)
     else
       {:error, reason} ->
-        Logger.error("Error poll device: #{inspect(reason)}")
+        Logger.error("Error poll substation #{substation_name}: #{inspect(reason)}")
         {:error, reason}
     end
   end
