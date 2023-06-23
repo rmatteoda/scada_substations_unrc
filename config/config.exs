@@ -21,15 +21,23 @@ config :logger, :console, format: "$time $metadata[$level] $message\n"
 
 # logger configuration
 config :logger,
-  backends: [{LoggerFileBackend, :debug_log}, {LoggerFileBackend, :error_log}]
+  backends: [
+    {LoggerFileBackend, :info_log},
+    {LoggerFileBackend, :debug_log},
+    {LoggerFileBackend, :error_log}
+  ]
 
-config :logger, :debug_log,
-  path: "log/debug.log",
-  level: :debug
+config :logger, :info_log,
+  path: "log/info.log",
+  level: :info
 
-config :logger, :error_log,
-  path: "log/error.log",
-  level: :error
+# config :logger, :debug_log,
+#   path: "log/debug.log",
+#   level: :debug
+
+# config :logger, :error_log,
+#   path: "log/error.log",
+#   level: :error
 
 # config time for to collect data from substations (recommended 10 minutes)
 config :scada_substations_unrc, ScadaSubstationsUnrc,
@@ -54,11 +62,16 @@ config :scada_substations_unrc, Oban,
     {Oban.Plugins.Cron,
      crontab: [
        # Configure oban cron job to run each hour
-       {"0 * * * *", ScadaSubstationsUnrc.Workers.WeatherObanWorker,
+       {"* * * * *", ScadaSubstationsUnrc.Workers.WeatherObanWorker,
         args: %{
+          # param to use weather stack client
           client: ScadaSubstationsUnrc.Clients.WeatherStackClient,
           weather_service_url: "http://api.weatherstack.com/current",
           access_key: "e08eb75ade286ed290fbc7a414c6e50c"
+          # param to use openweathermap client
+          # client: ScadaSubstationsUnrc.Clients.OpenWeathermapClient,
+          # weather_service_url: "http://api.openweathermap.org/data/2.5/weather",
+          # access_key: "ef9b058d47268d7d2e8dd78bcd6e5a0b"
         }},
        {"0 * * * *", ScadaSubstationsUnrc.Workers.ReportsObanWorker}
      ]}

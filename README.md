@@ -3,8 +3,9 @@
 **TODO: Add description**
 
 # TODO
-- Logger to file 
+- Add script or task or job to remove log files each week
 - Test in UNRC PC
+- Add another weather client using openwheater 
 - Add api to access data using main module
 - migrate DB from one pc to new version
   - https://www.postgresql.org/docs/9.0/migration.html
