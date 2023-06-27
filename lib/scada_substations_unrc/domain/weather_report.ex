@@ -38,4 +38,14 @@ defmodule ScadaSubstationsUnrc.Domain.WeatherReport do
     )
     |> Repo.all()
   end
+
+  @spec list_weather_data_from(NaiveDateTime.t()) :: any
+  def list_weather_data_from(from_datetime) do
+    from(weather in Weather,
+      where: weather.inserted_at > ^from_datetime,
+      order_by: [asc: :updated_at],
+      select: weather
+    )
+    |> Repo.all()
+  end
 end

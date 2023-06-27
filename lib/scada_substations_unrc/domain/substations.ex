@@ -23,6 +23,8 @@ defmodule ScadaSubstationsUnrc.Domain.Substations do
     end)
   end
 
+  @spec get_substation_by_name(any) ::
+          {:error, :substation_not_found} | {:ok, ScadaSubstationsUnrc.Domain.Substation.t()}
   def get_substation_by_name(substation_name) do
     query =
       Substation
@@ -93,6 +95,18 @@ defmodule ScadaSubstationsUnrc.Domain.Substations do
       where:
         md.substation_id == ^substation_id and
           md.inserted_at > datetime_add(^NaiveDateTime.utc_now(), -1, "week"),
+      order_by: [asc: :updated_at],
+      select: md
+    )
+    |> Repo.all()
+  end
+
+  @spec collected_data_from(Ecto.UUID.t(), NaiveDateTime.t()) :: any
+  def collected_data_from(substation_id, from_datetime) do
+    from(md in MeasuredValues,
+      where:
+        md.substation_id == ^substation_id and
+          md.inserted_at > ^from_datetime,
       order_by: [asc: :updated_at],
       select: md
     )
