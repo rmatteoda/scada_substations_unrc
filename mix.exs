@@ -47,7 +47,7 @@ defmodule ScadaSubstationsUnrc.MixProject do
       {:httpoison, "~> 1.8"},
       {:tesla, "~> 1.4"},
       {:csvlixir, "~> 2.0.3"},
-      {:logger_file_backend, "~> 0.0.10"},
+      # {:logger_file_backend, "~> 0.0.10"},
 
       # Code quality and testing
       {:ex_doc, "~> 0.28", only: :dev, runtime: false},

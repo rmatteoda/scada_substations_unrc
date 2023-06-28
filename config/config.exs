@@ -16,28 +16,19 @@ config :scada_substations_unrc, :device_table, [
   %{ip: "192.168.0.9", name: "sub_biblio", disabled: false}
 ]
 
-# Configures Elixir's Logger
-config :logger, :console, format: "$time $metadata[$level] $message\n"
+# logger config with file rotation, new feature on Elixir 1.15
+config :logger, :default_handler, level: :debug, format: "$time [$level] $message\n"
 
-# logger configuration
-config :logger,
-  backends: [
-    {LoggerFileBackend, :info_log},
-    {LoggerFileBackend, :debug_log},
-    {LoggerFileBackend, :error_log}
+config :logger, :default_handler,
+  config: [
+    file: ~c"./log/system.log",
+    filesync_repeat_interval: 2000,
+    file_check: 2000,
+    # 10 mega
+    max_no_bytes: 10_000_000,
+    max_no_files: 4,
+    compress_on_rotate: true
   ]
-
-config :logger, :info_log,
-  path: "log/info.log",
-  level: :info
-
-# config :logger, :debug_log,
-#   path: "log/debug.log",
-#   level: :debug
-
-# config :logger, :error_log,
-#   path: "log/error.log",
-#   level: :error
 
 # config time for to collect data from substations (recommended 10 minutes)
 config :scada_substations_unrc, ScadaSubstationsUnrc,
@@ -77,6 +68,29 @@ config :scada_substations_unrc, Oban,
      ]}
   ],
   queues: [default: 10]
+
+# Configures Elixir's Logger
+# config :logger, :console, format: "$time $metadata[$level] $message\n"
+
+# logger configuration
+# config :logger,
+#   backends: [
+#     {LoggerFileBackend, :info_log},
+#     {LoggerFileBackend, :debug_log},
+#     {LoggerFileBackend, :error_log}
+#   ]
+
+# config :logger, :info_log,
+#   path: "log/info.log",
+#   level: :info
+
+# config :logger, :debug_log,
+#   path: "log/debug.log",
+#   level: :debug
+
+# config :logger, :error_log,
+#   path: "log/error.log",
+#   level: :error
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
