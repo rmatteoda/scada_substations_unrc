@@ -1,6 +1,5 @@
-.PHONY: help devops.up devops.down docker.build docker.stop docker.delete docker.run docker.connect release.start release.connect setup check dialyzer dialyzer.plt lint lint.ci test coveralls coveralls.html grafana.wipe grafana.save grafana.load
+.PHONY: help start setup check dialyzer dialyzer.plt lint lint.ci test
 
-COMPOSE_PROJECT_NAME=foss_umbrella_local
 ENV_FILE ?= .env
 
 # add env variables if needed
@@ -45,9 +44,9 @@ lint.ci:
 	@mix credo --strict
 
 #start: @ ‍💻 Starts the service
-start: SHELL:=/bin/bash
-start:
-	@MIX_ENV=prod && iex -S mix
+# start: SHELL:=/bin/bash
+# start:
+# 	@MIX_ENV=prod && iex -S mix
 
 #run: @ ‍💻 Run the service
 run: SHELL:=/bin/bash
