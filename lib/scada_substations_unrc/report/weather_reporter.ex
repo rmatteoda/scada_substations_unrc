@@ -2,6 +2,7 @@ defmodule ScadaSubstationsUnrc.Report.WeatherReporter do
   @moduledoc false
 
   alias ScadaSubstationsUnrc.Domain.WeatherReport
+  alias ScadaSubstationsUnrc.Report.Files
 
   require Logger
 
@@ -9,16 +10,17 @@ defmodule ScadaSubstationsUnrc.Report.WeatherReporter do
   @weather_header ["Temperatura", "Presion", "Humedad", "Date"]
 
   def dump_weekly_report do
-    file_name = Path.join(report_path(), "weather_last_week.csv")
-
     WeatherReport.list_weather_data_last_week()
-    |> dump_to_csv(file_name)
+    |> dump_to_csv()
   end
 
-  defp dump_to_csv([], _filename), do: nil
+  defp dump_to_csv([]), do: nil
 
-  defp dump_to_csv(weather_data, file_name) do
-    f = File.open!(file_name, [:write, :utf8])
+  defp dump_to_csv(weather_data) do
+    f =
+      Files.report_file_name("weather")
+      |> File.open!([:write, :utf8])
+
     IO.write(f, CSVLixir.write_row(@weather_header))
 
     Enum.each(weather_data, fn weather ->
@@ -34,10 +36,5 @@ defmodule ScadaSubstationsUnrc.Report.WeatherReporter do
     end)
 
     File.close(f)
-  end
-
-  defp report_path do
-    Application.get_env(:scada_substations_unrc, ScadaSubstationsUnrc)
-    |> Keyword.fetch!(:report_path)
   end
 end

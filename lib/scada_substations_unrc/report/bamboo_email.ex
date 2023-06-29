@@ -5,7 +5,7 @@ defmodule ScadaSubstationsUnrc.Report.BambooEmail do
 
   import Bamboo.Email
 
-  def report_email do
+  def welcome_email do
     new_email(
       to: "rmatteoda@gmail.com",
       from: "metodosunrc@gmail.com",
@@ -15,13 +15,14 @@ defmodule ScadaSubstationsUnrc.Report.BambooEmail do
     )
   end
 
-  # def report(csv_file, substation_name) do
-  #   new(attachment: csv_file)
-  #   |> to("fernando.magnago@gmail.com")
-  #   |> cc("rmatteoda@gmail.com")
-  #   |> from({"SCADA", "metodosunrc@gmail.com"})
-  #   |> subject("Reporte for substation: " <> substation_name)
-  #   |> html_body("<h2>CSV Files SCADA UNRC</h2>")
-  #   |> text_body("reporte scada in csv files \n")
-  # end
+  def csv_report_email(csv_file, substation_name) do
+    new_email(
+      to: "rmatteoda@gmail.com",
+      from: "metodosunrc@gmail.com",
+      subject: "Reporte for substation: " <> substation_name,
+      html_body: "<strong>CSV Files SCADA UNRC</strong>",
+      text_body: "scada report attached in csv files \n!",
+      attachment: csv_file
+    )
+  end
 end

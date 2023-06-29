@@ -2,28 +2,29 @@ defmodule ScadaSubstationsUnrc.Report.SubstationReporter do
   @moduledoc false
 
   alias ScadaSubstationsUnrc.Domain.Substations
+  alias ScadaSubstationsUnrc.Report.Files
 
   require Logger
 
   # column names array for reports
   @meassured_header [
-    "Substation Name",
-    "Voltage A",
-    "Voltage B",
-    "Voltage C",
-    "Current A",
-    "Current B",
-    "Current C",
-    "Active Power A",
-    "Active Power B",
-    "Active Power C",
-    "Reactive Power A",
-    "Reactive Power B",
-    "Reactive Power C",
-    "Total Active Power",
-    "Total Reactive Power",
-    "Unbalance Voltage",
-    "Unbalance Current",
+    "Substation_Name",
+    "Voltage_A",
+    "Voltage_B",
+    "Voltage_C",
+    "Current_A",
+    "Current_B",
+    "Current_C",
+    "Active_Power_A",
+    "Active_Power_B",
+    "Active_Power_C",
+    "Reactive_Power_A",
+    "Reactive_Power_B",
+    "Reactive_Power_C",
+    "Total_Active_Power",
+    "Total_Reactive_Power",
+    "Unbalance_Voltage",
+    "Unbalance_Current",
     "Date"
   ]
 
@@ -39,14 +40,15 @@ defmodule ScadaSubstationsUnrc.Report.SubstationReporter do
 
   defp dump_report(substation) do
     Substations.collected_data_in_last_week(substation.id)
-    |> dump_to_csv(substation.name, "_last_week.csv")
+    |> dump_to_csv(substation.name)
   end
 
-  defp dump_to_csv([], _substation_name, _end_filename), do: nil
+  defp dump_to_csv([], _substation_name), do: nil
 
-  defp dump_to_csv(substation_data, substation_name, end_filename) do
-    file_name = Path.join(report_path(), substation_name <> end_filename)
-    f = File.open!(file_name, [:write, :utf8])
+  defp dump_to_csv(substation_data, substation_name) do
+    f =
+      Files.report_file_name(substation_name)
+      |> File.open!([:write, :utf8])
 
     IO.write(f, CSVLixir.write_row(@meassured_header))
 
@@ -77,10 +79,5 @@ defmodule ScadaSubstationsUnrc.Report.SubstationReporter do
     end)
 
     File.close(f)
-  end
-
-  defp report_path do
-    Application.get_env(:scada_substations_unrc, ScadaSubstationsUnrc)
-    |> Keyword.fetch!(:report_path)
   end
 end

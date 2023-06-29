@@ -7,8 +7,10 @@ defmodule ScadaSubstationsUnrc.Workers.EmailObanWorker do
 
   require Logger
 
+  alias ScadaSubstationsUnrc.Domain.Substations
   alias ScadaSubstationsUnrc.Mailer
   alias ScadaSubstationsUnrc.Report.BambooEmail
+  alias ScadaSubstationsUnrc.Report.Files
 
   @impl Oban.Worker
   @spec perform(Oban.Job.t()) ::
@@ -16,37 +18,20 @@ defmodule ScadaSubstationsUnrc.Workers.EmailObanWorker do
   def perform(%Oban.Job{
         args: _args
       }) do
-    Logger.info("Send email report worker runing")
-    # Create your email
-    BambooEmail.report_email()
-    # Send your email
-    |> Mailer.deliver_now()
+    Logger.info("Sending csv report by email for each substation")
+
+    Substations.list()
+    |> Enum.each(fn substation -> do_report_email(substation.name) end)
   end
 
   @impl Oban.Worker
   def timeout(_job), do: :timer.seconds(30)
 
-  # defp do_report_email do
-  #   substation_list = Application.get_env(:scada_master,:device_table) #save the device_table table configured
-  #   Reporter.do_report substation_list, :last_week
-  #   do_report_email substation_list
-  #   do_report_email_weather()
-  # end
-
-  # defp do_report_email([subconfig | substation_list]) do
-  #   file_name = Path.join(report_path(), subconfig.name <> "_last_week.csv")
-  #   Logger.debug "Sending email report for substation" <> subconfig.name
-  #   EmailScheme.report(file_name,subconfig.name) |> Mailer.deliver
-  #   do_report_email substation_list
-  # end
-
-  # defp do_report_email([]), do: nil
-
-  # defp do_report_email_weather do
-  #   Reporter.do_report_weather(:last_week)
-  #   file_name = Path.join(report_path(), "weather_last_week.csv")
-  #   Logger.debug "Sending email report with weather data"
-  #   EmailScheme.report(file_name,"weather") |> Mailer.deliver
-  # end
-
+  defp do_report_email(substation_name) do
+    Files.report_file_name(substation_name)
+    # Create your email
+    |> BambooEmail.csv_report_email(substation_name)
+    # Send your email
+    |> Mailer.deliver_now()
+  end
 end
