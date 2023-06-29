@@ -73,7 +73,7 @@ config :scada_substations_unrc, Oban,
 # config/config.exs
 config :scada_substations_unrc, ScadaSubstationsUnrc.Mailer,
   adapter: Bamboo.SendGridAdapter,
-  api_key: "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"
+  api_key: System.get_env("SENDGRID_API_KEY", "XXXXXXXX")
 
 # Configures Elixir's Logger
 # config :logger, :console, format: "$time $metadata[$level] $message\n"
