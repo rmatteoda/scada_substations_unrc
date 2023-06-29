@@ -38,6 +38,8 @@ defmodule ScadaSubstationsUnrc.MixProject do
       {:swoosh, "~> 1.3"},
       {:ecto_psql_extras, "~> 0.7.10"},
       {:oban, "~> 2.14"},
+      # Bamboo for SendGrid
+      {:bamboo, "~> 2.3.0"},
 
       # Others
       {:logger_json, "~> 5.1"},

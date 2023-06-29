@@ -44,6 +44,16 @@ lint.ci:
 	@mix format --check-formatted
 	@mix credo --strict
 
+#start: @ ‍💻 Starts the service
+start: SHELL:=/bin/bash
+start:
+	@MIX_ENV=prod && iex -S mix
+
+#run: @ ‍💻 Run the service
+run: SHELL:=/bin/bash
+run:
+	@MIX_ENV=prod && mix run --no-halt
+
 #🧪 test: @ Execute mix test for all the umbrella apps - add app=app_name to test only a specific app
 test:
 	@MIX_ENV=test mix test

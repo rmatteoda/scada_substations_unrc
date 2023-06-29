@@ -53,7 +53,7 @@ config :scada_substations_unrc, Oban,
     {Oban.Plugins.Cron,
      crontab: [
        # Configure oban cron job to run each hour
-       {"* * * * *", ScadaSubstationsUnrc.Workers.WeatherObanWorker,
+       {"0 * * * *", ScadaSubstationsUnrc.Workers.WeatherObanWorker,
         args: %{
           # param to use weather stack client
           client: ScadaSubstationsUnrc.Clients.WeatherStackClient,
@@ -64,10 +64,16 @@ config :scada_substations_unrc, Oban,
           # weather_service_url: "http://api.openweathermap.org/data/2.5/weather",
           # access_key: "ef9b058d47268d7d2e8dd78bcd6e5a0b"
         }},
-       {"0 * * * *", ScadaSubstationsUnrc.Workers.ReportsObanWorker}
+       {"0 * * * *", ScadaSubstationsUnrc.Workers.ReportsObanWorker},
+       {"* * * * *", ScadaSubstationsUnrc.Workers.EmailObanWorker}
      ]}
   ],
   queues: [default: 10]
+
+# config/config.exs
+config :scada_substations_unrc, ScadaSubstationsUnrc.Mailer,
+  adapter: Bamboo.SendGridAdapter,
+  api_key: "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"
 
 # Configures Elixir's Logger
 # config :logger, :console, format: "$time $metadata[$level] $message\n"

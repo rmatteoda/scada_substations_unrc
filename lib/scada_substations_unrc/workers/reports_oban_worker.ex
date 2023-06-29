@@ -22,8 +22,6 @@ defmodule ScadaSubstationsUnrc.Workers.ReportsObanWorker do
 
     # generate csv file report of weather data
     WeatherReporter.dump_weekly_report()
-
-    # email reports?
   end
 
   @impl Oban.Worker
