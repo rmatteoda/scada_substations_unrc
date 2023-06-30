@@ -18,11 +18,12 @@ defmodule ScadaSubstationsUnrc.Report.BambooEmail do
   def csv_report_email(csv_file, substation_name) do
     new_email(
       to: "rmatteoda@gmail.com",
+      cc: "fernando.magnago@gmail.com",
       from: "metodosunrc@gmail.com",
-      subject: "Reporte for substation: " <> substation_name,
-      html_body: "<strong>CSV Files SCADA UNRC</strong>",
-      text_body: "scada report attached in csv files \n!",
-      attachment: csv_file
+      subject: "Report for substation #{substation_name}",
+      html_body: "<strong>CSV File with data from substations scada device</strong>",
+      text_body: "scada report attached in csv file #{csv_file} \n!"
+      # attachment: csv_file
     )
   end
 end

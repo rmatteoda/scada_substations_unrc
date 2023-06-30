@@ -3,8 +3,8 @@
 **TODO: Add description**
 
 # TODO
-- Generate report by email
 - review configuration for each env
+- test with all working
 - Test in UNRC PC
 - migrate DB from one pc to new version
   - https://www.postgresql.org/docs/9.0/migration.html

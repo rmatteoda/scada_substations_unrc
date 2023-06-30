@@ -65,7 +65,7 @@ config :scada_substations_unrc, Oban,
           # access_key: "ef9b058d47268d7d2e8dd78bcd6e5a0b"
         }},
        {"0 * * * *", ScadaSubstationsUnrc.Workers.ReportsObanWorker},
-       {"* * * * *", ScadaSubstationsUnrc.Workers.EmailObanWorker}
+       {"0 * * * *", ScadaSubstationsUnrc.Workers.EmailObanWorker}
      ]}
   ],
   queues: [default: 10]
