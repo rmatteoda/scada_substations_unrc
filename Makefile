@@ -1,5 +1,6 @@
 .PHONY: help start setup check dialyzer dialyzer.plt lint lint.ci test
 
+export MIX_ENV ?= dev
 ENV_FILE ?= .env
 
 # add env variables if needed
@@ -21,6 +22,10 @@ setup:
 #⚗️ start: @ Starts a iex session
 start:
 	@iex -S mix
+
+#⚗️ start: @ Starts a iex session
+start.dev:
+	@iex -S MIX_ENV=dev mix
 
 #🔍 check: @ Runs all code verifications
 check: lint.ci dialyzer test

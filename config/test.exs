@@ -11,6 +11,10 @@ config :scada_substations_unrc, ScadaSubstationsUnrc.Domain.Repo,
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: 10
 
+config :scada_substations_unrc, :device_table, [
+  %{ip: "192.168.0.1", name: "sub_test", disabled: false}
+]
+
 # config SubstationMonitor that will be getting the values from device in each substation
 config :scada_substations_unrc, :monitor, disabled?: true
 
