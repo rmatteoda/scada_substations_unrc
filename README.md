@@ -2,6 +2,19 @@
 
 **TODO: Add description**
 
+# TODO
+- Test in UNRC PC
+- migrate DB from one pc to new version
+  - https://www.postgresql.org/docs/9.0/migration.html
+  - https://stackoverflow.com/questions/1237725/copying-postgresql-database-to-another-server
+- Configure script to run on startup (start_scada.sh)
+- Search another option for modbus lib
+- Add monitoring app (grafana, prometheus, signoz?) 
+  - https://signoz.io/blog/opentelemetry-elixir/
+  - https://monika.hyperjump.tech/
+- Add CI/CD for PR
+- Install and up all using docker compose?
+  
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed

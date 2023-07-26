@@ -35,6 +35,8 @@ defmodule ScadaSubstationsUnrc.MixProject do
       {:swoosh, "~> 1.3"},
       {:ecto_psql_extras, "~> 0.7.10"},
       {:oban, "~> 2.14"},
+      # Bamboo for SendGrid
+      {:bamboo, "~> 2.3.0"},
 
       # Others
       {:logger_json, "~> 5.1"},
@@ -43,11 +45,14 @@ defmodule ScadaSubstationsUnrc.MixProject do
       {:elixir_uuid, "~> 1.2"},
       {:httpoison, "~> 1.8"},
       {:tesla, "~> 1.4"},
+      {:csvlixir, "~> 2.0.3"},
+      # {:logger_file_backend, "~> 0.0.10"},
 
       # Code quality and testing
-      {:credo, "~> 1.6", runtime: false},
-      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:ex_doc, "~> 0.28", only: :dev, runtime: false},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:styler, "~> 0.7", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
 
       # Tesla adapter
       {:hackney, "~> 1.18"}
@@ -60,7 +65,7 @@ defmodule ScadaSubstationsUnrc.MixProject do
   defp aliases do
     [
       setup: ["deps.get", "ecto.setup"],
-      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+      "ecto.setup": ["ecto.create", "ecto.migrate"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]
     ]
