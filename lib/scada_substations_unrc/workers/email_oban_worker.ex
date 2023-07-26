@@ -1,6 +1,6 @@
 defmodule ScadaSubstationsUnrc.Workers.EmailObanWorker do
   @moduledoc false
-  @max_attempts 3
+  @max_attempts 5
 
   use Oban.Worker,
     max_attempts: @max_attempts
@@ -16,9 +16,10 @@ defmodule ScadaSubstationsUnrc.Workers.EmailObanWorker do
   @spec perform(Oban.Job.t()) ::
           :ok | {:error, any()}
   def perform(%Oban.Job{
-        args: _args
+        args: _args,
+        attempt: attempt
       }) do
-    Logger.info("Sending csv report by email for each substation")
+    Logger.info("Sending csv report by email for each substation, attemp: #{attempt}")
 
     Substations.list()
     |> Enum.each(fn substation -> do_report_email(substation.name) end)
