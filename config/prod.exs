@@ -23,8 +23,8 @@ config :scada_substations_unrc, Oban,
           weather_service_url: "http://api.weatherstack.com/current",
           access_key: "e08eb75ade286ed290fbc7a414c6e50c"
         }},
-       # Configure csv reporter  to run every day
-       {"0 0 * * *", ScadaSubstationsUnrc.Workers.ReportsObanWorker},
+       # Configure csv reporter to run every day at 9:00 AM
+       {"0 9 * * *", ScadaSubstationsUnrc.Workers.ReportsObanWorker},
        # Configure email reporter to run At 13:00, only on Friday
        {"0 13 * * FRI", ScadaSubstationsUnrc.Workers.EmailObanWorker}
      ]}

@@ -9,11 +9,11 @@
   - https://stackoverflow.com/questions/1237725/copying-postgresql-database-to-another-server
 - Configure script to run on startup (start_scada.sh)
 - Search another option for modbus lib
+- Replace CSVLixir for a new library  
 - Add monitoring app (grafana, prometheus, signoz?) 
   - https://signoz.io/blog/opentelemetry-elixir/
   - https://monika.hyperjump.tech/
 - Add CI/CD for PR
-- Install and up all using docker compose?
   
 ## Installation
 

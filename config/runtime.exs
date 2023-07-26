@@ -16,4 +16,4 @@ config :scada_substations_unrc, ScadaSubstationsUnrc.Domain.Repo,
   pool_size: System.get_env("ECTO_POOL_SIZE", "10") |> String.to_integer(),
   socket_options: maybe_ipv6
 
-config :logger, level: :info
+# config :logger, level: :info
