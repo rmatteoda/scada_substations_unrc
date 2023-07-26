@@ -35,10 +35,10 @@ config :scada_substations_unrc, Oban,
           # weather_service_url: "http://api.openweathermap.org/data/2.5/weather",
           # access_key: "ef9b058d47268d7d2e8dd78bcd6e5a0b"
         }},
-       # Configure csv reporter  to run each 1 minute
-       {"* * * * *", ScadaSubstationsUnrc.Workers.ReportsObanWorker},
-       # Configure email reporter to run each 5 minute
-       {"*/5 * * * *", ScadaSubstationsUnrc.Workers.EmailObanWorker}
+       # Configure csv reporter  to run each 5 minute
+       {"*/5 * * * *", ScadaSubstationsUnrc.Workers.ReportsObanWorker},
+       # Configure email reporter to run each 10 minute
+       {"*/10 * * * *", ScadaSubstationsUnrc.Workers.EmailObanWorker}
      ]}
   ],
   queues: [default: 10]

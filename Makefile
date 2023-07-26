@@ -14,18 +14,22 @@ default: help
 help:
 	@grep -E '[a-zA-Z\.\-]+:.*?@ .*$$' $(firstword $(MAKEFILE_LIST))| tr -d '#'  | awk 'BEGIN {FS = ":.*?@ "}; {printf "\033[32m%-30s\033[0m %s\n", $$1, $$2}'
 
-#📦 setup: @ Execute mix setup in all the umbrella apps
+#📦 setup: @ Execute mix setup in all the service
 setup:
 	@mix setup
 	MIX_ENV=test mix setup
 
-#⚗️ start: @ Starts a iex session
-start:
-	@iex -S mix
+setup.dev:
+	@MIX_ENV=dev mix setup
 
-#⚗️ start: @ Starts a iex session
+#⚗️ start: @ Starts the service
+# @iex -S mix
+start:
+	@MIX_ENV=prod mix run --no-halt
+
+#⚗️ start: @ Starts the service in dev env
 start.dev:
-	@iex -S MIX_ENV=dev mix
+	@MIX_ENV=dev mix run --no-halt
 
 #🔍 check: @ Runs all code verifications
 check: lint.ci dialyzer test
