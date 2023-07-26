@@ -1,5 +1,6 @@
 .PHONY: help start setup check dialyzer dialyzer.plt lint lint.ci test
 
+export MIX_ENV ?= dev
 ENV_FILE ?= .env
 
 # add env variables if needed
@@ -13,14 +14,22 @@ default: help
 help:
 	@grep -E '[a-zA-Z\.\-]+:.*?@ .*$$' $(firstword $(MAKEFILE_LIST))| tr -d '#'  | awk 'BEGIN {FS = ":.*?@ "}; {printf "\033[32m%-30s\033[0m %s\n", $$1, $$2}'
 
-#📦 setup: @ Execute mix setup in all the umbrella apps
+#📦 setup: @ Execute mix setup in all the service
 setup:
 	@mix setup
 	MIX_ENV=test mix setup
 
-#⚗️ start: @ Starts a iex session
+setup.dev:
+	@MIX_ENV=dev mix setup
+
+#⚗️ start: @ Starts the service
+# @iex -S mix
 start:
-	@iex -S mix
+	@MIX_ENV=prod mix run --no-halt
+
+#⚗️ start: @ Starts the service in dev env
+start.dev:
+	@MIX_ENV=dev mix run --no-halt
 
 #🔍 check: @ Runs all code verifications
 check: lint.ci dialyzer test
