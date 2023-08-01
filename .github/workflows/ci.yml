@@ -27,7 +27,7 @@ jobs:
   # format, and runs a static code analysis.
   dev:
     name: "[Dev] Code Quality & Analysis"
-    
+    runs-on: self-hosted-aws
     env:
       # Environment variables used directly by the application.
       ECTO_DB: scada_unrc_dev
