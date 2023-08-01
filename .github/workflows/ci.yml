@@ -1,0 +1,235 @@
+# This is a Continuous Integration workflow that runs the following jobs:
+#
+# * Checks development tools, code quality and static code analysis.
+# * Run unit tests
+#
+name: "CI"
+
+# Controls when the action will run.
+on:
+  # This action is triggered on any branch that opens a pull request.
+  pull_request:
+    branches:
+      - "*"
+    # This action is not triggered when markdown files are modified.
+    paths-ignore:
+      - "**.md"
+
+# Global environment for the current workflow
+env:
+  ECTO_USER: postgres
+  ECTO_PASS: postgres
+  
+# A workflow run is made up of one or more jobs that can run sequentially or in
+# parallel
+jobs:
+  # The dev job compiles the application in the dev environment, checks code
+  # format, and runs a static code analysis.
+  dev:
+    name: "[Dev] Code Quality & Analysis"
+    
+    env:
+      # Environment variables used directly by the application.
+      ECTO_DB: scada_unrc_dev
+      MIX_ENV: dev
+    services:
+      db:
+        image: postgres
+        ports: ["5430:5432"]
+        env:
+          POSTGRES_USER: ${{ env.ECTO_USER }}
+          POSTGRES_PASSWORD: ${{ env.ECTO_PASS }}
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      # Setup Elixir ----------------------------------------------------------
+      - name: Setup elixir
+        uses: erlef/setup-elixir@v1
+        with:
+          elixir-version: 1.15.0
+          otp-version: 25
+
+      # Set vars for the cache step -------------------------------------------
+      - name: Set mix file hash
+        id: set_vars
+        run: |
+          mix_hash="${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}"
+          echo "::set-output name=mix_hash::$mix_hash"
+
+      # Restores cache --------------------------------------------------------
+      - name: Cache files
+        id: dev-cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            deps
+            _build
+          key: ${{ runner.os }}-dev-mix-${{ steps.set_vars.outputs.mix_hash }}
+          restore-keys: |
+            ${{ runner.os }}-dev-mix-
+
+      # Get and build all the deps --------------------------------------------
+      - name: Install Dependencies
+        run: |
+          mix setup
+
+      # Build the project -----------------------------------------------------
+      - name: Build the Project
+        run: mix compile
+
+      # Check code format -----------------------------------------------------
+      - name: Run formatter check
+        run: |
+          make lint.ci
+
+      # Run a static code analysis --------------------------------------------
+      - name: Run Dialyzer
+        run: >
+          make dialyzer
+
+  # The test job compiles the application in the test environment and runs unit
+  # tests
+  test:
+    name: "[Test] Unit & Integration tests"
+    runs-on: self-hosted-aws
+    env:
+      # Environment variables used directly by the application.
+      ECTO_DB: scada_unrc_test
+      MIX_ENV: test
+    services:
+      db:
+        image: postgres
+        ports: ["5430:5432"]
+        env:
+          POSTGRES_USER: ${{ env.ECTO_USER }}
+          POSTGRES_PASSWORD: ${{ env.ECTO_PASS }}
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      # Checkout code ---------------------------------------------------------
+      - uses: actions/checkout@v2
+
+      # Setup Elixir ----------------------------------------------------------
+      - name: Setup elixir
+        uses: erlef/setup-elixir@v1
+        with:
+          elixir-version: 1.15.0
+          otp-version: 25
+
+      # Set vars for the cache step -------------------------------------------
+      - name: Set mix file hash
+        id: set_vars
+        run: |
+          mix_hash="${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}"
+          echo "::set-output name=mix_hash::$mix_hash"
+
+      # Restores PLT cache ----------------------------------------------------
+      - name: Cache files
+        id: dev-cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            deps
+            _build
+          key: ${{ runner.os }}-test-mix-${{ steps.set_vars.outputs.mix_hash }}
+          restore-keys: |
+            ${{ runner.os }}-test-mix-
+
+      # Get and build all the deps --------------------------------------------
+      - name: Install Dependencies
+        run: |
+          mix setup
+
+      # Run tests ----------------------------------------------------
+      - name: Run tests
+        run: >
+          mix test
+
+  # The release job compiles the application in the prod environment to assemble
+  # a self-contained release
+  release:
+    name: "[Release] Code Quality & Analysis"
+
+    env:
+      ECTO_DB: scada_unrc_prod
+      MIX_ENV: prod
+      STAGE: local
+    services:
+      db:
+        image: postgres
+        ports: ["5430:5432"]
+        env:
+          POSTGRES_USER: ${{ env.ECTO_USER }}
+          POSTGRES_PASSWORD: ${{ env.ECTO_PASS }}
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Checkout code ---------------------------------------------------------
+      - uses: actions/checkout@v2
+
+      # Setup Elixir ----------------------------------------------------------
+      - name: Setup elixir
+        uses: erlef/setup-elixir@v1
+        with:
+          elixir-version: 1.15.0
+          otp-version: 25
+
+      # Set vars for the cache step -------------------------------------------
+      - name: Set mix file hash
+        id: set_vars
+        run: |
+          mix_hash="${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}"
+          echo "::set-output name=mix_hash::$mix_hash"
+
+      # Configure git auth  ---------------------------------------------------
+      - name: Configure git authentication
+        if: ${{ env.github_token != '' }}
+        run: |
+          git config \
+            --global url."https://${{ env.github_token }}:x-oauth-basic@github.com/".insteadOf "git@github.com:"
+
+      # Restores PLT cache ----------------------------------------------------
+      - name: Cache files
+        id: prod-cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            deps
+            _build
+          key: ${{ runner.os }}-prod-mix-${{ steps.set_vars.outputs.mix_hash }}
+          restore-keys: |
+            ${{ runner.os }}-prod-mix-
+
+      # Get and build all the deps --------------------------------------------
+      - name: Install Dependencies
+        run: |
+          mix do deps.get, deps.compile, compile
+
+      # Create release --------------------------------------------------------
+      - name: Create release
+        run: |
+          mkdir -p opt/release
+          mix release --overwrite
+          mv _build/${MIX_ENV}/rel/scada_substations_unrc opt/release
+          mv start_scada.sh opt/release/scada_substations_unrc/start_scada.sh
+          chmod +x opt/release/scada_substations_unrc/start_scada.sh
+
+      # Run migrations --------------------------------------------------------
+      # - name: Run migrations
+      #   shell: bash
+      #   run: |
+      #     ./start_scada.sh migrate
+
+      # Test release ----------------------------------------------------------
