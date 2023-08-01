@@ -1,9 +1,9 @@
 defmodule ScadaSubstationsUnrc.Report.SubstationReporter do
   @moduledoc false
 
+  alias NimbleCSV.RFC4180, as: CSVParser
   alias ScadaSubstationsUnrc.Domain.Substations
   alias ScadaSubstationsUnrc.Report.Files
-  alias NimbleCSV.RFC4180, as: CSVParser
 
   require Logger
 
