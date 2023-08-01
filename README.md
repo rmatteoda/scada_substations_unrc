@@ -3,7 +3,6 @@
 # TODO
 - read csv files with data from old DB and migrate to new DB
 - Search another option for modbus lib
-- Add CI/CD for PR
 - Improve README and documentation
 - Add test
 - Replace CSVLixir for a new library  
