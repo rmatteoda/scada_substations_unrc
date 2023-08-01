@@ -17,28 +17,6 @@ defmodule ScadaSubstationsUnrc.Report.WeatherReporter do
 
   defp dump_to_csv([]), do: nil
 
-  # defp dump_to_csv(weather_data) do
-  #   f =
-  #     Files.report_file_name("weather")
-  #     |> File.open!([:write, :utf8])
-
-  #   IO.write(f, CSVLixir.write_row(@weather_header))
-
-  #   Enum.each(weather_data, fn weather ->
-  #     IO.write(
-  #       f,
-  #       CSVLixir.write_row([
-  #         weather.temp,
-  #         weather.pressure,
-  #         weather.humidity,
-  #         NaiveDateTime.to_string(weather.inserted_at)
-  #       ])
-  #     )
-  #   end)
-
-  #   File.close(f)
-  # end
-
   defp dump_to_csv(weather_data) do
     iodata =
       ([@weather_header] ++ format_values(weather_data))
