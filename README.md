@@ -1,11 +1,11 @@
 # ScadaSubstationsUnrc
 
-**TODO: Add description**
-
 # TODO
-- Configure script to run on startup (start_scada.sh)
+- read csv files with data from old DB and migrate to new DB
 - Search another option for modbus lib
 - Add CI/CD for PR
+- Improve README and documentation
+- Add test
 - Replace CSVLixir for a new library  
 - migrate DB from one pc to new version
   - https://www.postgresql.org/docs/9.0/migration.html

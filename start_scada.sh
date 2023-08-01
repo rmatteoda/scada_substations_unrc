@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#script to add in init process for linux in order to start collector app on pc startups
-
-#path to app on linux 
+# script used to start and run scada on startup 
+# review under notes how to add this script to run on startup
+# path to app on linux 
 cd "/home/fernando/scada/scada_substations_unrc"
 
 make start
