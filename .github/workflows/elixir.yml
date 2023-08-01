@@ -36,10 +36,7 @@ jobs:
     - name: Install dependencies
       run: mix deps.get
     - name: Code quality check
-      run: |
-           mix format --check-formatted
-	         mix credo --strict
-
+      run: make lint.ci
     - name: Run a static code analysis
       run: mix dialyzer --format dialyxir
     - name: Run tests
