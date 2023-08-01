@@ -5,7 +5,6 @@
 - Search another option for modbus lib
 - Improve README and documentation
 - Add test
-- Replace CSVLixir for a new library  
 - migrate DB from one pc to new version
   - https://www.postgresql.org/docs/9.0/migration.html
   - https://stackoverflow.com/questions/1237725/copying-postgresql-database-to-another-server

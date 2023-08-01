@@ -3,6 +3,7 @@ defmodule ScadaSubstationsUnrc.Report.SubstationReporter do
 
   alias ScadaSubstationsUnrc.Domain.Substations
   alias ScadaSubstationsUnrc.Report.Files
+  alias NimbleCSV.RFC4180, as: CSVParser
 
   require Logger
 
@@ -46,38 +47,37 @@ defmodule ScadaSubstationsUnrc.Report.SubstationReporter do
   defp dump_to_csv([], _substation_name), do: nil
 
   defp dump_to_csv(substation_data, substation_name) do
-    f =
-      Files.report_file_name(substation_name)
-      |> File.open!([:write, :utf8])
+    iodata =
+      ([@meassured_header] ++ format_values(substation_name, substation_data))
+      |> CSVParser.dump_to_iodata()
 
-    IO.write(f, CSVLixir.write_row(@meassured_header))
+    Files.report_file_name(substation_name)
+    |> File.write!(iodata, [:write, :utf8])
+  end
 
-    Enum.each(substation_data, fn measured_values ->
-      IO.write(
-        f,
-        CSVLixir.write_row([
-          substation_name,
-          measured_values.voltage_a,
-          measured_values.voltage_b,
-          measured_values.voltage_c,
-          measured_values.current_a,
-          measured_values.current_b,
-          measured_values.current_c,
-          measured_values.activepower_a,
-          measured_values.activepower_b,
-          measured_values.activepower_c,
-          measured_values.reactivepower_a,
-          measured_values.reactivepower_b,
-          measured_values.reactivepower_c,
-          measured_values.totalactivepower,
-          measured_values.totalreactivepower,
-          measured_values.unbalance_voltage,
-          measured_values.unbalance_current,
-          NaiveDateTime.to_string(measured_values.inserted_at)
-        ])
-      )
+  defp format_values(substation_name, collected_data) do
+    collected_data
+    |> Enum.map(fn measured_values ->
+      [
+        substation_name,
+        measured_values.voltage_a,
+        measured_values.voltage_b,
+        measured_values.voltage_c,
+        measured_values.current_a,
+        measured_values.current_b,
+        measured_values.current_c,
+        measured_values.activepower_a,
+        measured_values.activepower_b,
+        measured_values.activepower_c,
+        measured_values.reactivepower_a,
+        measured_values.reactivepower_b,
+        measured_values.reactivepower_c,
+        measured_values.totalactivepower,
+        measured_values.totalreactivepower,
+        measured_values.unbalance_voltage,
+        measured_values.unbalance_current,
+        NaiveDateTime.to_string(measured_values.inserted_at)
+      ]
     end)
-
-    File.close(f)
   end
 end

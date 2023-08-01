@@ -3,10 +3,11 @@ defmodule ScadaSubstationsUnrc.Report.WeatherReporter do
 
   alias ScadaSubstationsUnrc.Domain.WeatherReport
   alias ScadaSubstationsUnrc.Report.Files
+  alias NimbleCSV.RFC4180, as: CSVParser
 
   require Logger
 
-  # column names array for reports
+  # column names for CSV report header
   @weather_header ["Temperatura", "Presion", "Humedad", "Date"]
 
   def dump_weekly_report do
@@ -16,25 +17,46 @@ defmodule ScadaSubstationsUnrc.Report.WeatherReporter do
 
   defp dump_to_csv([]), do: nil
 
+  # defp dump_to_csv(weather_data) do
+  #   f =
+  #     Files.report_file_name("weather")
+  #     |> File.open!([:write, :utf8])
+
+  #   IO.write(f, CSVLixir.write_row(@weather_header))
+
+  #   Enum.each(weather_data, fn weather ->
+  #     IO.write(
+  #       f,
+  #       CSVLixir.write_row([
+  #         weather.temp,
+  #         weather.pressure,
+  #         weather.humidity,
+  #         NaiveDateTime.to_string(weather.inserted_at)
+  #       ])
+  #     )
+  #   end)
+
+  #   File.close(f)
+  # end
+
   defp dump_to_csv(weather_data) do
-    f =
-      Files.report_file_name("weather")
-      |> File.open!([:write, :utf8])
+    iodata =
+      ([@weather_header] ++ format_values(weather_data))
+      |> CSVParser.dump_to_iodata()
 
-    IO.write(f, CSVLixir.write_row(@weather_header))
+    Files.report_file_name("weather")
+    |> File.write!(iodata, [:write, :utf8])
+  end
 
-    Enum.each(weather_data, fn weather ->
-      IO.write(
-        f,
-        CSVLixir.write_row([
-          weather.temp,
-          weather.pressure,
-          weather.humidity,
-          NaiveDateTime.to_string(weather.inserted_at)
-        ])
-      )
+  defp format_values(weather_data) do
+    weather_data
+    |> Enum.map(fn weather ->
+      [
+        weather.temp,
+        weather.pressure,
+        weather.humidity,
+        NaiveDateTime.to_string(weather.inserted_at)
+      ]
     end)
-
-    File.close(f)
   end
 end
