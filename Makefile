@@ -16,11 +16,19 @@ help:
 
 #📦 setup: @ Execute mix setup in all the service
 setup:
-	@mix setup
-	MIX_ENV=test mix setup
+	MIX_ENV=prod mix setup
 
 setup.dev:
 	@MIX_ENV=dev mix setup
+
+setup.test:
+	@mix setup
+	MIX_ENV=test mix setup
+
+setup.all:
+	@MIX_ENV=dev mix setup
+	@MIX_ENV=prod mix setup
+	@MIX_ENV=test mix setup
 
 #⚗️ start: @ Starts the service
 # @iex -S mix
