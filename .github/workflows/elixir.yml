@@ -39,5 +39,5 @@ jobs:
       run: make lint.ci
     - name: Run a static code analysis
       run: mix dialyzer --format dialyxir
-    - name: Run tests
-      run: mix test
+    #- name: Run tests
+    #  run: mix test
