@@ -13,10 +13,8 @@ config :logger, format: "$time [$level] $message\n"
 
 # config time for to collect data from substations (recommended 10 minutes)
 config :scada_substations_unrc, ScadaSubstationsUnrc,
-  # 2 horas
   report_after: 2 * 60 * 60 * 1000,
-  # 10 horas
-  report_path: "/home/ramiro/Documents/UNRC/scada_substations_unrc/tmp"
+  report_path: System.get_env("REPORT_PATH", "/home/fernando/scada/scada_substations_unrc/tmp")
 
 # config SubstationMonitor that will be getting the values from device in each substation
 config :scada_substations_unrc, :monitor,

@@ -1,7 +1,7 @@
 import Config
 
 # Print only warnings and errors during test
-config :logger, level: :warn
+config :logger, level: :warning
 
 config :scada_substations_unrc, ScadaSubstationsUnrc.Domain.Repo,
   username: "postgres",

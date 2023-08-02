@@ -6,7 +6,7 @@ config :scada_substations_unrc, ScadaSubstationsUnrc.Domain.Repo,
   database: "scada_unrc_dev",
   username: "postgres",
   password: "postgres",
-  port: System.get_env("ECTO_PORT", "5430") |> String.to_integer(),
+  port: System.get_env("ECTO_PORT", "5432") |> String.to_integer(),
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
