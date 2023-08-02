@@ -1,6 +1,6 @@
 # Scada Substations UNRC
 
-IoT Service that read power consuption (voltage, current, active_power, reactive_power, total reactive_power and unbalance_voltage) from each substation located in UNRC through modbus connection, generate reports and send periodic emails notification, also it include a weather report to used for analysis wit power consumption and forecast predictions.
+IoT Service that read power consumption (voltage, current, active_power, reactive_power, total reactive_power, and unbalance_voltage) from each substation located in UNRC through Modbus connection, generate reports and send periodic emails notification, also it includes a weather report to used for analysis with power consumption and forecast predictions
 
 ### Requirements
 
