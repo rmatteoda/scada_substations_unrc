@@ -25,14 +25,15 @@ config :scada_substations_unrc, ScadaSubstationsUnrc.PromEx,
   drop_metrics_groups: [],
   grafana: :disabled,
   metrics_server: :disabled
-  # grafana: [
-  #   host: System.get_env("GRAFANA_HOST") || raise("GRAFANA_HOST is required"),
-  #   username: "1092461",
-  #   password: "configured",
-  #   #auth_token: System.get_env("GRAFANA_TOKEN") || raise("GRAFANA_TOKEN is required"),
-  #   upload_dashboards_on_start: true,
-  #   folder_name: "ScadaSubstationsUnrc Dashboards",
-  #   annotate_app_lifecycle: true
-  # ]
+
+# grafana: [
+#   host: System.get_env("GRAFANA_HOST") || raise("GRAFANA_HOST is required"),
+#   username: "1092461",
+#   password: "configured",
+#   #auth_token: System.get_env("GRAFANA_TOKEN") || raise("GRAFANA_TOKEN is required"),
+#   upload_dashboards_on_start: true,
+#   folder_name: "ScadaSubstationsUnrc Dashboards",
+#   annotate_app_lifecycle: true
+# ]
 
 # config :logger, level: :info
