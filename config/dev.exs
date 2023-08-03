@@ -51,4 +51,4 @@ config :scada_substations_unrc, :monitor,
   retries: 2
 
 # Do not include metadata nor timestamps in development logs
-config :logger, format: "$time [$level] $message\n"
+config :logger, level: :info, format: "$time [$level] $message\n"

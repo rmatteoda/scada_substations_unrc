@@ -20,6 +20,7 @@ defmodule ScadaSubstationsUnrc.HealthcheckPlug do
 
   plug(:match)
   plug(:dispatch)
+  plug(PromEx.Plug, prom_ex_module: ScadaSubstationsUnrc.PromEx)
 
   # Is this container in a state that is can not server traffic. And example of
   # this would be if we hook up some kind of back pressure support in a queue
