@@ -17,22 +17,27 @@ config :scada_substations_unrc, ScadaSubstationsUnrc.Domain.Repo,
   socket_options: maybe_ipv6
 
 config :scada_substations_unrc, ScadaSubstationsUnrc.PromEx,
-  # metrics_server: [
-  #   port: 4001
-  # ],
-  disabled: true,
   manual_metrics_start_delay: :no_delay,
   drop_metrics_groups: [],
   grafana: :disabled,
+  disabled: true,
   metrics_server: :disabled
 
+# disabled: false,
+# metrics_server: [
+#    port: 4001,
+#    path: "/metrics",
+#    protocol: :http,
+#    pool_size: 5,
+#    cowboy_opts: []
+# ],
 # grafana: [
 #   host: System.get_env("GRAFANA_HOST") || raise("GRAFANA_HOST is required"),
 #   username: "1092461",
-#   password: "configured",
-#   #auth_token: System.get_env("GRAFANA_TOKEN") || raise("GRAFANA_TOKEN is required"),
+#   password: "nexant",
+#   #   #auth_token: System.get_env("GRAFANA_TOKEN") || raise("GRAFANA_TOKEN is required"),
 #   upload_dashboards_on_start: true,
-#   folder_name: "ScadaSubstationsUnrc Dashboards",
+#   folder_name: "GrafanaCloud",
 #   annotate_app_lifecycle: true
 # ]
 

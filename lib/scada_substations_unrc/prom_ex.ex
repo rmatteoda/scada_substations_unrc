@@ -62,8 +62,12 @@ defmodule ScadaSubstationsUnrc.PromEx do
       # PromEx built in plugins
       Plugins.Application,
       Plugins.Beam,
-      Plugins.Ecto,
-      Plugins.Oban
+      {PromEx.Plugins.Ecto,
+       otp_app: :scada_substations_unrc, repos: [ScadaSubstationsUnrc.Domain.Repo]},
+      {Plugins.PlugCowboy,
+       ignore_routes: ["/metrics"], routers: [ScadaSubstationsUnrc.HealthcheckPlug]},
+      {Plugins.Oban, oban_supervisors: [Oban]}
+
       # Add your own PromEx metrics plugins
       # ScadaSubstationsUnrc.Users.PromExPlugin
     ]
@@ -72,7 +76,8 @@ defmodule ScadaSubstationsUnrc.PromEx do
   @impl true
   def dashboard_assigns do
     [
-      datasource_id: "grafanacloud-unrcscada-prom",
+      # datasource_id: "grafanacloud-unrcscada-prom",
+      datasource_id: "4",
       default_selected_interval: "30s"
     ]
   end
@@ -84,7 +89,8 @@ defmodule ScadaSubstationsUnrc.PromEx do
       {:prom_ex, "application.json"},
       {:prom_ex, "beam.json"},
       {:prom_ex, "ecto.json"},
-      {:prom_ex, "oban.json"}
+      {:prom_ex, "oban.json"},
+      {:prom_ex, "plug_cowboy.json"}
 
       # Add your dashboard definitions here with the format: {:otp_app, "path_in_priv"}
       # {:scada_substations_unrc, "/grafana_dashboards/user_metrics.json"}

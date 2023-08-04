@@ -10,9 +10,6 @@ defmodule ScadaSubstationsUnrc.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # Start Cowboy web server
-      {Plug.Cowboy,
-       scheme: :http, plug: HealthcheckPlug, options: [port: HealthcheckPlug.get_port()]},
       # Capture Prometheus metrics
       ScadaSubstationsUnrc.PromEx,
       # Start the Ecto repository
@@ -23,6 +20,9 @@ defmodule ScadaSubstationsUnrc.Application do
       {DynamicSupervisor, strategy: :one_for_one, name: ScadaSubstationsUnrc.DSupervisor},
       # Launch all the monitors for a chain
       {Task, &ScadaSubstationsUnrc.DSupervisor.start_registered_substation/0},
+      # Start Cowboy web server
+      {Plug.Cowboy,
+       scheme: :http, plug: HealthcheckPlug, options: [port: HealthcheckPlug.get_port()]},
 
       # Starts Oban job processor
       {Oban, Application.fetch_env!(:scada_substations_unrc, Oban)}
