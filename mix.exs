@@ -35,6 +35,9 @@ defmodule ScadaSubstationsUnrc.MixProject do
       {:swoosh, "~> 1.3"},
       {:ecto_psql_extras, "~> 0.7.10"},
       {:oban, "~> 2.14"},
+      {:nimble_csv, "~> 1.1"},
+      {:plug_cowboy, "~> 2.5"},
+
       # Bamboo for SendGrid
       {:bamboo, "~> 2.3.0"},
 
@@ -45,8 +48,9 @@ defmodule ScadaSubstationsUnrc.MixProject do
       {:elixir_uuid, "~> 1.2"},
       {:httpoison, "~> 1.8"},
       {:tesla, "~> 1.4"},
-      # {:csvlixir, "~> 2.0.3"},
-      {:nimble_csv, "~> 1.1"},
+      {:prom_ex, "~> 1.8.0"},
+      # {:telemetry_metrics, "~> 1.0"},
+      {:telemetry_poller, "~> 1.0"},
 
       # Code quality and testing
       {:ex_doc, "~> 0.28", only: :dev, runtime: false},

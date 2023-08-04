@@ -38,7 +38,7 @@ config :scada_substations_unrc, Oban,
        # Configure csv reporter  to run each 5 minute
        {"*/5 * * * *", ScadaSubstationsUnrc.Workers.ReportsObanWorker},
        # Configure email reporter to run each 10 minute
-       {"*/10 * * * *", ScadaSubstationsUnrc.Workers.EmailObanWorker}
+       {"*/50 * * * *", ScadaSubstationsUnrc.Workers.EmailObanWorker}
      ]}
   ],
   queues: [default: 10]
@@ -51,4 +51,4 @@ config :scada_substations_unrc, :monitor,
   retries: 2
 
 # Do not include metadata nor timestamps in development logs
-config :logger, format: "$time [$level] $message\n"
+config :logger, level: :debug, format: "$time [$level] $message\n"
