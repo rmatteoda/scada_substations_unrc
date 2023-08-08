@@ -1,0 +1,78 @@
+# ---------------------------------------------------------------------------
+# Docker setup for local development and testing.
+#
+# This compose file should have pretty much everything needed to run a local
+# copy of the service.  The goal here is to make an easy to debug environment
+# that doesn't require any other external hosting.
+
+version: "3.9"
+services:
+  # ---------------------------------------------------------------------------
+  # Setup the local Prometheus  server.
+  # ---------------------------------------------------------------------------
+  prometheus:
+    image: public.ecr.aws/bitnami/prometheus:latest
+    container_name: scada_prometheus
+    hostname: prometheus
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090"
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus-data:/prometheus
+    command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
+    networks:
+      open:
+        aliases:
+          - prometheus
+
+  grafana:
+    image: public.ecr.aws/ubuntu/grafana:latest
+    container_name: scada_grafana
+    ports:
+      - "${GRAFANA_PORT:-3000}:3000"
+    volumes:
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - grafana-data:/var/lib/grafana
+    healthcheck:
+      test: ["CMD", "grafana-cli", "plugins", "ls"]
+      interval: 5s
+      timeout: 15s
+      retries: 5
+    networks:
+      open:
+        aliases:
+          - grafana
+
+  # ---------------------------------------------------------------------------
+  # Setup the local Postgres server.
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: public.ecr.aws/docker/library/postgres:alpine
+    container_name: scada_postgres
+    hostname: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      PGPORT: ${ECTO_PORT:-5432}
+    ports:
+      - "${ECTO_PORT:-5432}:${ECTO_PORT:-5432}"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 5s
+      timeout: 15s
+      retries: 5
+    networks:
+      open:
+        aliases:
+          - postgres
+
+networks:
+  open:
+    driver: bridge
+
+volumes:
+  prometheus-data:
+  grafana-data:
+  postgres-data:
