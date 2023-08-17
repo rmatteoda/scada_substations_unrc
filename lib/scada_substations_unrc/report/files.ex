@@ -8,6 +8,10 @@ defmodule ScadaSubstationsUnrc.Report.Files do
     Path.join(report_path(), resource_name <> end_file_name)
   end
 
+  def csv_file(file_path, resource_name, end_file_name \\ "_last_week.csv") do
+    Path.join(file_path, resource_name <> end_file_name)
+  end
+
   defp report_path do
     Application.get_env(:scada_substations_unrc, ScadaSubstationsUnrc)
     |> Keyword.fetch!(:report_path)
