@@ -47,7 +47,7 @@ defmodule ScadaSubstationsUnrc.Domain.MeasuredValues do
     :unbalance_current,
     :substation_id
   ]
-  @optional_fields []
+  @optional_fields [:inserted_at]
 
   @spec changeset(t(), map()) :: Ecto.Changeset.t()
   def changeset(measured_value, params) do
@@ -55,7 +55,5 @@ defmodule ScadaSubstationsUnrc.Domain.MeasuredValues do
     |> cast(params, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
     |> foreign_key_constraint(:substation_id)
-
-    # |> cast_assoc(:substations)
   end
 end
