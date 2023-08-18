@@ -16,7 +16,7 @@ help:
 
 #📦 setup: @ Execute mix setup in all the service
 setup:
-	MIX_ENV=prod mix setup
+	@MIX_ENV=prod mix setup
 
 setup.dev:
 	@MIX_ENV=dev mix setup

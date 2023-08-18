@@ -37,8 +37,8 @@ config :scada_substations_unrc, Oban,
         }},
        # Configure csv reporter  to run each 5 minute
        {"*/5 * * * *", ScadaSubstationsUnrc.Workers.ReportsObanWorker},
-       # Configure email reporter to run each 10 minute
-       {"*/50 * * * *", ScadaSubstationsUnrc.Workers.EmailObanWorker}
+       # Configure email reporter to run each 20 minute
+       {"*/20 * * * *", ScadaSubstationsUnrc.Workers.EmailObanWorker}
      ]}
   ],
   queues: [default: 10]

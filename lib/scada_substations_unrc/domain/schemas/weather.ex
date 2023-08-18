@@ -13,7 +13,7 @@ defmodule ScadaSubstationsUnrc.Domain.Weather do
   end
 
   @required_fields [:humidity, :pressure, :temp]
-  @optional_fields [:cloudiness, :wind_speed]
+  @optional_fields [:cloudiness, :wind_speed, :inserted_at]
 
   @spec changeset(t(), map()) :: Ecto.Changeset.t()
   def changeset(weather, params) do
