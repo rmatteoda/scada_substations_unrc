@@ -3,6 +3,7 @@ defmodule ScadaSubstationsUnrc.Clients.ImportCsvData do
 
   alias NimbleCSV.RFC4180, as: CSVParser
   alias ScadaSubstationsUnrc.Domain.Substations
+  alias ScadaSubstationsUnrc.Domain.WeatherReport
   alias ScadaSubstationsUnrc.Report.Files
 
   require Logger
@@ -19,6 +20,33 @@ defmodule ScadaSubstationsUnrc.Clients.ImportCsvData do
         Logger.error("Error poll substation #{substation_name}: #{inspect(reason)}")
         {:error, reason}
     end
+  end
+
+  def import_historical_weather(csv_files_path) do
+    Files.csv_file(
+      csv_files_path,
+      "weather",
+      "_all.csv"
+    )
+    |> File.stream!(read_ahead: 100_000)
+    |> CSVParser.parse_stream()
+    |> Stream.map(fn [
+                       temp,
+                       pressure,
+                       humidity,
+                       measure_time
+                     ] ->
+      %{
+        temp: String.to_float(temp),
+        pressure: String.to_float(pressure),
+        humidity: String.to_float(humidity),
+        inserted_at: measure_time
+      }
+      |> WeatherReport.create()
+    end)
+    |> Stream.run()
+
+    Logger.info("Historical weather data was imported into DB")
   end
 
   defp insert_historical_data(csv_files_path, substation) do
