@@ -10,21 +10,45 @@ defmodule ScadaSubstationsUnrc.Worker.PollSubstationWorker do
          {:ok, collected_values} <- do_read_registers(substation_ip, substation) do
       Substations.storage_collected_data(substation, collected_values)
     else
+      {:error, :failed_connect} ->
+        {:error, :failed_connect}
+
       {:error, reason} ->
         Logger.error("Error poll substation #{substation_name}: #{inspect(reason)}")
         {:error, reason}
     end
   end
 
+  @doc """
+  Save 0.0 to all values when conenction failed
+  """
+  def save_failed_connect_device(%{name: substation_name} = _substation) do
+    with {:ok, substation} <- Substations.get_substation_by_name(substation_name),
+         {:ok, failled_connect_values} <- failed_connect_registers(substation) do
+      Substations.storage_collected_data(substation, failled_connect_values)
+    else
+      {:error, reason} ->
+        Logger.error(
+          "Error save failled values on substation #{substation_name}: #{inspect(reason)}"
+        )
+
+        {:error, reason}
+    end
+  end
+
   # Read sempron register using ex_modbus library
   defp do_read_registers(substation_ip, substation) do
-    {pid, connected_status} = do_connect(substation_ip)
-    do_read_modbus(pid, substation, connected_status)
+    do_connect(substation_ip)
+    |> do_read_modbus(substation)
+  end
+
+  defp do_read_modbus({_pid, :failed_connect}, _substation) do
+    {:error, :failed_connect}
   end
 
   # buid register map from struc for substation with all offsets and register key defined
   # iterate over map to read all registers
-  defp do_read_modbus(pid, substation, connected_status) do
+  defp do_read_modbus({pid, connected_status}, substation) do
     substation_values =
       Map.from_struct(ScadaSubstationsUnrc.Domain.MeasureStruct)
       |> Map.new(fn {key, val} ->
@@ -54,9 +78,16 @@ defmodule ScadaSubstationsUnrc.Worker.PollSubstationWorker do
       {:ok, 0.0}
   end
 
-  # Create default map with values on connection error (nodbus status not conected)
-  defp do_read_register(_pid, _register_offset, :failed_connect) do
-    {:ok, 0.0}
+  # Create default map with values on connection error (modbus status failed_connect)
+  defp failed_connect_registers(substation) do
+    substation_values =
+      Map.from_struct(ScadaSubstationsUnrc.Domain.MeasureStruct)
+      |> Map.new(fn {key, _val} ->
+        {key, 0.0}
+      end)
+      |> Map.put(:substation_id, substation.id)
+
+    {:ok, substation_values}
   end
 
   defp do_connect(substation_ip) do
