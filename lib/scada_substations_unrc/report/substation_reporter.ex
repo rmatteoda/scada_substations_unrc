@@ -4,8 +4,8 @@ defmodule ScadaSubstationsUnrc.Report.SubstationReporter do
   alias NimbleCSV.RFC4180, as: CSVParser
   alias ScadaSubstationsUnrc.Domain.Substations
   alias ScadaSubstationsUnrc.Report.Files
-  alias Timex.Timezone
-  alias Timex.Timezone.Local
+  # alias Timex.Timezone
+  # alias Timex.Timezone.Local
 
   require Logger
 
@@ -79,9 +79,10 @@ defmodule ScadaSubstationsUnrc.Report.SubstationReporter do
         measured_values.unbalance_voltage,
         measured_values.unbalance_current,
         # options to convert local time (Argentina timezone)
-        measured_values.inserted_at
-        |> Timezone.convert(Local.lookup())
-        |> DateTime.to_iso8601()
+        # measured_values.inserted_at
+        # |> Timezone.convert(Local.lookup())
+        # |> DateTime.to_iso8601()
+        measured_values.inserted_at |> DateTime.add(-3, :hour) |> DateTime.to_string()
         # DateTime.to_string(measured_values.inserted_at)
       ]
     end)

@@ -4,8 +4,8 @@ defmodule ScadaSubstationsUnrc.Report.WeatherReporter do
   alias NimbleCSV.RFC4180, as: CSVParser
   alias ScadaSubstationsUnrc.Domain.WeatherReport
   alias ScadaSubstationsUnrc.Report.Files
-  alias Timex.Timezone
-  alias Timex.Timezone.Local
+  # alias Timex.Timezone
+  # alias Timex.Timezone.Local
 
   require Logger
 
@@ -36,10 +36,10 @@ defmodule ScadaSubstationsUnrc.Report.WeatherReporter do
         weather.pressure,
         weather.humidity,
         # to convert local time (Argentina timezone)
-        weather.inserted_at
-        |> Timezone.convert(Local.lookup())
-        |> DateTime.to_iso8601()
-        # weather.inserted_at |> DateTime.add(-3, :hour) |> DateTime.to_string()
+        # weather.inserted_at
+        # |> Timezone.convert(Local.lookup())
+        # |> DateTime.to_iso8601()
+        weather.inserted_at |> DateTime.add(-3, :hour) |> DateTime.to_string()
         # DateTime.to_string(weather.inserted_at)
       ]
     end)
