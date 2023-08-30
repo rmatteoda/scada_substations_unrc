@@ -7,3 +7,7 @@
 - deploy app with docker compose
   - some sample https://github.com/akoutmos/prom_ex/blob/master/example_applications/web_app/run_docker_stack.sh
   
+## some comands
+ScadaSubstationsUnrc.Clients.ImportCsvData.import_historical_data("/home/fernando/scada/reports/historical_reports","sub_jardin")
+{:ok, sub} = ScadaSubstationsUnrc.Domain.Substations.get_substation_by_name("sub_jardin")
+length(ScadaSubstationsUnrc.Domain.Substations.collected_data(sub.id))

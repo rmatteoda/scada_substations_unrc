@@ -50,6 +50,7 @@ defmodule ScadaSubstationsUnrc.Clients.ImportCsvData do
   end
 
   defp insert_historical_data(csv_files_path, substation) do
+    Logger.info("Adding Historical substatin #{substation.name} data into DB ")
     Files.csv_file(
       csv_files_path,
       substation.name,
