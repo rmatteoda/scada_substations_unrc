@@ -13,7 +13,13 @@ config :scada_substations_unrc, ScadaSubstationsUnrc.Domain.Repo,
 
 # configure ip of diferent device connected to substation to be monitored.
 config :scada_substations_unrc, :device_table, [
-  %{ip: "192.168.0.8", name: "sub_dev", disabled: false}
+  %{
+    ip: "192.168.0.8",
+    name: "sub_dev",
+    location: "Dev Env",
+    description: "Substation used in Dev Environment",
+    disabled: false
+  }
 ]
 
 # config Oban to run cron jobs

@@ -12,7 +12,13 @@ config :scada_substations_unrc, ScadaSubstationsUnrc.Domain.Repo,
   pool_size: 10
 
 config :scada_substations_unrc, :device_table, [
-  %{ip: "192.168.0.1", name: "sub_test", disabled: false}
+  %{
+    ip: "192.168.0.1",
+    name: "sub_test",
+    location: "Dev Env",
+    description: "Substation used in Dev Environment",
+    disabled: false
+  }
 ]
 
 # config Oban to run cron jobs
