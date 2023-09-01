@@ -8,23 +8,23 @@ defmodule ScadaSubstationsUnrc.Domain.Substations do
   alias ScadaSubstationsUnrc.Domain.Repo
   alias ScadaSubstationsUnrc.Domain.Substation
 
-  def create_substation(substation_name) do
+  def create_substation(substation_attrs) do
     %Substation{}
-    |> Substation.changeset(%{name: substation_name})
+    |> Substation.changeset(substation_attrs)
     |> Repo.insert()
   end
 
   def add_substations(substations) do
-    Enum.each(substations, fn substation ->
-      case get_substation_by_name(substation.name) do
-        {:ok, _substation} -> :ok
-        {:error, :substation_not_found} -> create_substation(substation.name)
+    Enum.each(substations, fn substation_attrs ->
+      case get_substation_by_name(substation_attrs.name) do
+        {:ok, substation} -> update_substation(substation, substation_attrs)
+        {:error, :substation_not_found} -> create_substation(substation_attrs)
       end
     end)
   end
 
   @spec get_substation_by_name(any) ::
-          {:error, :substation_not_found} | {:ok, ScadaSubstationsUnrc.Domain.Substation.t()}
+          {:error, :substation_not_found} | {:ok, Substation.t()}
   def get_substation_by_name(substation_name) do
     query =
       Substation
@@ -44,9 +44,9 @@ defmodule ScadaSubstationsUnrc.Domain.Substations do
     Repo.all(Substation)
   end
 
-  @spec update(substation :: Substation.t(), attrs :: map) ::
+  @spec update_substation(substation :: Substation.t(), attrs :: map) ::
           {:ok, Substation.t()} | {:error, Ecto.Changeset.t()}
-  def update(%Substation{} = substation, attrs) do
+  def update_substation(%Substation{} = substation, attrs) do
     substation
     |> Substation.changeset(attrs)
     |> Repo.update()
@@ -70,6 +70,8 @@ defmodule ScadaSubstationsUnrc.Domain.Substations do
   @doc """
   Save collected data from substation into measured_values table
   """
+  @spec storage_collected_data(substation :: Substation.t(), collected_values :: map) ::
+          {:ok, MeasuredValues.t()} | {:error, Ecto.Changeset.t()}
   def storage_collected_data(substation, collected_values) do
     collected_for = Map.put(collected_values, :substation_id, substation.id)
 
