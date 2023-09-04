@@ -1,29 +1,33 @@
-# Antennas / Network/ Ip configuration
+# SCADA Network Configuration
 
-## Router D-Link
-IP router D-Link PC Scada: 200.7.132.224
-mascara: 255.255.254.0
-enlace: 200.7.132.1
-dns:  200.7.141.6/7
-admin sin password
+## Router local
+IP router Scada: 192.168.0.1 (para acceder a la config)
+admin password: nexant123
 
+WiFi red: ERLANG
+     pwd: nexant123
 ## Antennas
-- IP antenna omni central gasep: 192.168.0.20 / user/pass: ubnt/aleksa1
+IP Antenna omni central gasep: 192.168.0.20 / user/pass: ubnt/aleksa1
 
-- IP antenna tp-link sub anfiteatro: 192.168.0.254
-- IP antenna tp-link que va a la sub jardin: 192.168.0.253 / user/pass: admin/admin
-- IP antenna ubiquiti que va a la biblioteca : 192.168.0.250 / user/pass: ubnt/erlang
+IP Antena Biblioteca: 192.168.0.250 / user/pass: ubnt/erlang
+IP Siemens Biblioteca: 192.168.0.9 admin/admin
 
-- IP equipo siemens sub anfiteatro 192.168.0.5 admin/admin
-- IP equipo siemens sub jardin 192.168.0.6 admin/admin
-- IP equipo siemens sub biblioteca 192.168.0.9 admin/admin
+IP Antena Anfiteatro:    192.168.0.254
+IP Siemens Anfiteatro:  192.168.0.5 admin/admin
 
-- password fernando user linux nexant
-- password admin user windows 123
+IP Antena Jardin: 192.168.0.253 / user/pass: admin/admin
+IP Siemens Jardin: 192.168.0.6
 
-SSID: ERLANG clave scadaelixir, WPA/PSK AES
-region USA
-Mac of AP 80-2A-A8-36-73-55
+IP Antena  Arte: 192.168.0.252  
+IP Siemens Arte: 192.168.0.7
+
+## PC SCADA 
+user fernando / password nexant123
+password admin user windows 123
+
+## Database postgres
+usuario read_user password abcd12345
+database scada_unrc_prod
 
 revisar:
 https://help.ubnt.com/hc/es/articles/205197610-airMAX-configurar-un-punto-de-acceso-punto-a-multipunto-PtMP-ISP-estilo

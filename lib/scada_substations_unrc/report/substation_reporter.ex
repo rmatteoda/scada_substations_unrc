@@ -76,7 +76,8 @@ defmodule ScadaSubstationsUnrc.Report.SubstationReporter do
         measured_values.totalreactivepower,
         measured_values.unbalance_voltage,
         measured_values.unbalance_current,
-        NaiveDateTime.to_string(measured_values.inserted_at)
+        # options to convert local time (Argentina timezone)
+        measured_values.inserted_at |> DateTime.add(-3, :hour) |> DateTime.to_string()
       ]
     end)
   end

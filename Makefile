@@ -30,7 +30,7 @@ clean:
 
 #📦 setup: @ Execute mix setup in all the service
 setup:
-	MIX_ENV=prod mix setup
+	@MIX_ENV=prod mix setup
 
 setup.dev:
 	@MIX_ENV=dev mix setup
@@ -74,10 +74,10 @@ lint.ci:
 	@mix format --check-formatted
 	@mix credo --strict
 
-#start: @ ‍💻 Starts the service
-# start: SHELL:=/bin/bash
-# start:
-# 	@MIX_ENV=prod && iex -S mix
+# start: @ ‍💻 Starts the service with iex
+start.iex.dev: SHELL:=/bin/bash
+start.iex.dev:
+ 			@MIX_ENV=dev && iex -S mix
 
 #run: @ ‍💻 Run the service
 run: SHELL:=/bin/bash

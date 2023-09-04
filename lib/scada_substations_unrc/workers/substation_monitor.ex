@@ -10,7 +10,7 @@ defmodule ScadaSubstationsUnrc.Worker.SubstationMonitor do
   # initial time to start polling vivo service after init
   @initial_poll_time 6_000
   # retry timer if poll fail until retries exausted
-  @retry_poll_time 60_000
+  @retry_poll_time 30_000
 
   def start_link(args) do
     GenServer.start_link(__MODULE__, args)
@@ -69,6 +69,9 @@ defmodule ScadaSubstationsUnrc.Worker.SubstationMonitor do
     Logger.warning(
       "[#{__MODULE__}] Pooler retries exhausted when trying to read data from substation #{inspect(state)}"
     )
+
+    # on retries exhausted, save failed default data to measured registers (0.0)
+    PollSubstationWorker.save_failed_connect_device(state.substation)
 
     # reset attempt and schedule with configured sleet time
     Process.send_after(self(), :do_poll, state.poll_time)

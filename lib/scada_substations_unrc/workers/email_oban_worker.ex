@@ -19,10 +19,13 @@ defmodule ScadaSubstationsUnrc.Workers.EmailObanWorker do
         args: _args,
         attempt: attempt
       }) do
-    Logger.info("Sending csv report by email for each substation, attemp: #{attempt}")
+    Logger.info("Sending csv reports by email (substations and weather), attemp: #{attempt}")
 
     Substations.list()
     |> Enum.each(fn substation -> do_report_email(substation.name) end)
+
+    send_weather_report()
+    :ok
   end
 
   @impl Oban.Worker
@@ -32,6 +35,14 @@ defmodule ScadaSubstationsUnrc.Workers.EmailObanWorker do
     Files.report_file_name(substation_name)
     # Create your email
     |> BambooEmail.csv_report_email(substation_name)
+    # Send your email
+    |> Mailer.deliver_now()
+  end
+
+  defp send_weather_report do
+    Files.report_file_name("weather")
+    # Create your email
+    |> BambooEmail.csv_report_email("weather")
     # Send your email
     |> Mailer.deliver_now()
   end
