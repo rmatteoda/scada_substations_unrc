@@ -93,19 +93,27 @@ test.only: TAG:=wip
 test.only:
 	@MIX_ENV=test mix test --only ${TAG}
 
-#⚙️  devops.up:@   Starts up the `docker-compose.yaml` services located in /devops/local_dev
-devops.up:
-	@cd ./devops/local_dev && docker compose up -d
-
-#⚙️  devops.down:@   Ends the `docker-compose.yaml` services located in /devops/local_dev
-devops.down:
-	@cd ./devops/local_dev && docker compose --profile healthy down
-
 #🐳 docker.build: @ Build the full_node docker image
 docker.build:
-	@cp ./devops/builder/Dockerfile ./
-	@docker build --build-arg ./ -t full_node
+	@cp ./devops/local_dev/Dockerfile ./
+	@docker build ./
 	@ rm ./Dockerfile
+
+docker.up:
+	@cp ./devops/local_dev/Dockerfile ./
+	@cp ./devops/local_dev/docker-compose.yml ./
+	@MIX_ENV=prod
+	@docker compose up -d
+	@ rm ./Dockerfile
+	@ rm ./docker-compose.yml
+
+#⚙️  devops.down:@   Ends the `docker-compose.yaml` services located in /devops/local_dev
+docker.down:
+	@cp ./devops/local_dev/Dockerfile ./
+	@cp ./devops/local_dev/docker-compose.yml ./
+	@docker compose --profile healthy down
+	@ rm ./Dockerfile
+	@ rm ./docker-compose.yml
 
 #🐳 docker.stop: @ Stop the full_node docker instance
 docker.stop:
@@ -139,17 +147,3 @@ docker.start.daemon: docker.build docker.stop docker.delete docker.run.daemon
 #🐳 docker.connect: @ Connect to the full_node running container
 docker.connect:
 	@docker exec -it full_node /bin/bash
-
-#⚗️  release.start: @   Connect to the full_node running instance using iex
-release.start: docker.start
-
-#⚗️  release.start.daemon: @   Build and (re)start the full_node instance as a background service
-release.start.daemon: docker.start.daemon
-
-#⚗️  release.connect: @   Connect to the full_node running instance using iex
-release.connect: docker.connect
-
-#⚗️  release.iex: @   Connect to the full_node running instance using iex
-release.iex:
-	@docker exec -it full_node /app/bin/full_node remote
-

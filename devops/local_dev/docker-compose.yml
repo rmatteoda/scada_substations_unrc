@@ -8,71 +8,87 @@
 version: "3.9"
 services:
   # ---------------------------------------------------------------------------
-  # Setup the local Prometheus  server.
-  # ---------------------------------------------------------------------------
-  prometheus:
-    image: public.ecr.aws/bitnami/prometheus:latest
-    container_name: scada_prometheus
-    hostname: prometheus
-    ports:
-      - "${PROMETHEUS_PORT:-9090}:9090"
-    volumes:
-      - ./prometheus:/etc/prometheus
-      - prometheus-data:/prometheus
-    command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
-    networks:
-      open:
-        aliases:
-          - prometheus
-
-  grafana:
-    image: public.ecr.aws/ubuntu/grafana:latest
-    container_name: scada_grafana
-    ports:
-      - "${GRAFANA_PORT:-3000}:3000"
-    volumes:
-      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
-      - grafana-data:/var/lib/grafana
-    healthcheck:
-      test: ["CMD", "grafana-cli", "plugins", "ls"]
-      interval: 5s
-      timeout: 15s
-      retries: 5
-    networks:
-      open:
-        aliases:
-          - grafana
-
-  # ---------------------------------------------------------------------------
   # Setup the local Postgres server.
   # ---------------------------------------------------------------------------
   postgres:
-    image: public.ecr.aws/docker/library/postgres:alpine
+    image: postgres:13.4-alpine
     container_name: scada_postgres
+    restart: unless-stopped
     hostname: postgres
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
-      PGPORT: ${ECTO_PORT:-5432}
-    ports:
-      - "${ECTO_PORT:-5432}:${ECTO_PORT:-5432}"
+      PGPORT: 5432
+      DATABASE_URL: ecto://postgres:postgres@postgres/scada_unrc_prod
+      DATABASE_USER: postgres
+      DATABASE_PASS: postgres
+      DATABASE_NAME: scada_unrc_prod
+      DATABASE_PORT: 5432
+      DATABASE_HOST: db
     volumes:
       - postgres-data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
-      interval: 5s
-      timeout: 15s
-      retries: 5
     networks:
       open:
         aliases:
           - postgres
+  app:
+    build: .
+    container_name: scada_app
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    environment:
+      MIX_ENV: prod
+    env_file:
+      - local.env
+    ports:
+      - '4000:4000'
+    volumes:
+      - .:/app
+    networks:
+      open:
+        aliases:
+          - app
+  # ---------------------------------------------------------------------------
+  # Setup the local Prometheus  server.
+  # ---------------------------------------------------------------------------
+  # prometheus:
+  #   image: public.ecr.aws/bitnami/prometheus:latest
+  #   container_name: scada_prometheus
+  #   hostname: prometheus
+  #   ports:
+  #     - "${PROMETHEUS_PORT:-9090}:9090"
+  #   volumes:
+  #     - ./prometheus:/etc/prometheus
+  #     - prometheus-data:/prometheus
+  #   command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
+  #   networks:
+  #     open:
+  #       aliases:
+  #         - prometheus
+
+  # grafana:
+  #   image: public.ecr.aws/ubuntu/grafana:latest
+  #   container_name: scada_grafana
+  #   ports:
+  #     - "${GRAFANA_PORT:-3000}:3000"
+  #   volumes:
+  #     - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+  #     - grafana-data:/var/lib/grafana
+  #   healthcheck:
+  #     test: ["CMD", "grafana-cli", "plugins", "ls"]
+  #     interval: 5s
+  #     timeout: 15s
+  #     retries: 5
+  #   networks:
+  #     open:
+  #       aliases:
+  #         - grafana
 
 networks:
   open:
     driver: bridge
 
 volumes:
-  prometheus-data:
-  grafana-data:
   postgres-data:
+  app-data:
