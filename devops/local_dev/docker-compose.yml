@@ -32,15 +32,17 @@ services:
         aliases:
           - postgres
   app:
-    build: .
+    #build: .
+    image: scada_app:latest
     container_name: scada_app
     restart: unless-stopped
     depends_on:
       - postgres
     environment:
       MIX_ENV: prod
+      #PATH: /home/ramiro/Documents/UNRC/scada_substations_unrc
     env_file:
-      - local.env
+      - ./local.env
     ports:
       - '4000:4000'
     volumes:

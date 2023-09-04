@@ -93,10 +93,10 @@ test.only: TAG:=wip
 test.only:
 	@MIX_ENV=test mix test --only ${TAG}
 
-#🐳 docker.build: @ Build the full_node docker image
+#🐳 docker.build: @ Build the scada_app docker image
 docker.build:
 	@cp ./devops/local_dev/Dockerfile ./
-	@docker build ./
+	@docker build -t scada_app .
 	@ rm ./Dockerfile
 
 docker.up:
@@ -115,35 +115,29 @@ docker.down:
 	@ rm ./Dockerfile
 	@ rm ./docker-compose.yml
 
-#🐳 docker.stop: @ Stop the full_node docker instance
+#🐳 docker.stop: @ Stop the scada_app docker instance
 docker.stop:
-	@docker stop full_node || true
+	@docker stop scada_app || true
 
-#🐳 docker.delete: @ Delete the full_node docker instance
+#🐳 docker.delete: @ Delete the scada_app docker instance
 docker.delete:
-	@docker rm full_node || true
+	@docker rm scada_app || true
 
-#🐳 docker.run: @ Run the full_node docker instance
+#🐳 docker.run: @ Run the scada_app docker instance
 docker.run:
-	@docker run --name full_node \
+	@docker run --name scada_app \
 		--network $(COMPOSE_PROJECT_NAME)_open \
 		-p 9568:9568 \
 		-p $(ADMIN_INTERNAL_PORT):$(ADMIN_INTERNAL_PORT) \
 		-p $(GATEWAY_INTERNAL_PORT):$(GATEWAY_INTERNAL_PORT) \
 		--env-file .env \
 		$(EXTRA_ARGS) \
-		full_node
+		scada_app
 
-#🐳 docker.run.daemon: @ Run the full_node docker instance as a background service
-docker.run.daemon: EXTRA_ARGS=--detach
-docker.run.daemon: docker.run
-
-#⚗️  docker.start: @   Build and (re)start the full_node instance
+#⚗️  docker.start: @   Build and (re)start the scada_app instance
 docker.start: docker.build docker.stop docker.delete docker.run
 
-#⚗️  docker.start.daemon: @   Build and (re)start the full_node instance as a background service
-docker.start.daemon: docker.build docker.stop docker.delete docker.run.daemon
-
-#🐳 docker.connect: @ Connect to the full_node running container
+#🐳 docker.connect: @ Connect to the scada_app running container
 docker.connect:
-	@docker exec -it full_node /bin/bash
+	@docker exec -it scada_app /bin/bash
+# docker run -it --rm --entrypoint sh scada_app:latest

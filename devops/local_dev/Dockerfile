@@ -7,13 +7,7 @@ FROM ${BUILDER_IMAGE} as builder
 # Set the release type, this will be usefull in the future if we happen to 
 # separate the releses and deployments. More changes to this Dockerfile should 
 # be needed as well as the rel/overlays/bin scripts.
-# ARG release_type=full_node
-
-# RUN apk update && apk upgrade && \
-#   apk add postgresql-client && \
-#   apk add nodejs npm && \
-#   apk add build-base && \
-#   rm -rf /var/cache/apk/*
+ARG release_type=scada_app
 
 # install hex + rebar
 RUN mix local.hex --force && \
@@ -42,20 +36,19 @@ COPY config/runtime.exs config/runtime.exs
 # COPY rel rel
 RUN mix release
 
-# EXPOSE 4000
+EXPOSE 4000
 
-COPY entrypoint.sh ./
-#_build/${MIX_ENV}/rel/full_node
+COPY entrypoint.sh ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh
+COPY entrypoint.sh /scada_app
+
+WORKDIR /scada_app
+COPY . /scada_app
 
 # set runner ENV
-# ENV MIX_ENV="prod"
+ENV MIX_ENV="prod"
+ENV PATH=/home/ramiro/Documents/UNRC/scada_substations_unrc:$PATH
 
-# # Only copy the final release from the build stage
-# COPY --from=builder --chown=nobody:nobody /app/_build/${MIX_ENV}/rel/full_node ./
+ENV HOME=/scada_app
 
-# USER nobody
-# ENV HOME=/app
-
-RUN chmod +x ./entrypoint.sh
-
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["/scada_app/entrypoint.sh"]
