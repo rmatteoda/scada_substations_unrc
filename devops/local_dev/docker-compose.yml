@@ -40,7 +40,6 @@ services:
       - postgres
     environment:
       MIX_ENV: prod
-      #PATH: /home/ramiro/Documents/UNRC/scada_substations_unrc
     env_file:
       - ./local.env
     ports:

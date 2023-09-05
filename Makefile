@@ -140,4 +140,6 @@ docker.start: docker.build docker.stop docker.delete docker.run
 #🐳 docker.connect: @ Connect to the scada_app running container
 docker.connect:
 	@docker exec -it scada_app /bin/bash
-# docker run -it --rm --entrypoint sh scada_app:latest
+
+docker.connect.iex:
+	@docker exec -it scada_app /bin/bash remote

@@ -7,7 +7,6 @@ FROM ${BUILDER_IMAGE} as builder
 # Set the release type, this will be usefull in the future if we happen to 
 # separate the releses and deployments. More changes to this Dockerfile should 
 # be needed as well as the rel/overlays/bin scripts.
-ARG release_type=scada_app
 
 # install hex + rebar
 RUN mix local.hex --force && \
@@ -40,7 +39,6 @@ EXPOSE 4000
 
 COPY entrypoint.sh ./entrypoint.sh
 RUN chmod +x ./entrypoint.sh
-COPY entrypoint.sh /scada_app
 
 WORKDIR /scada_app
 COPY . /scada_app
@@ -48,7 +46,5 @@ COPY . /scada_app
 # set runner ENV
 ENV MIX_ENV="prod"
 ENV PATH=/home/ramiro/Documents/UNRC/scada_substations_unrc:$PATH
-
-ENV HOME=/scada_app
 
 ENTRYPOINT ["/scada_app/entrypoint.sh"]

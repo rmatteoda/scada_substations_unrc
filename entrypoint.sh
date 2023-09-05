@@ -33,4 +33,5 @@ mix ecto.migrate
 echo "Migrations finished."
 
 # Start the server.
-exec mix phx.server
+exec make start
+# exec MIX_ENV=prod mix run --no-halt
