@@ -6,4 +6,7 @@
 - Add monitoring and trace (grafana/ prometheus, https://akoutmos.com/post/prometheus-postgis-and-phoenix-two)
 - deploy app with docker compose
   - some sample https://github.com/akoutmos/prom_ex/blob/master/example_applications/web_app/run_docker_stack.sh
-  
+
+## Added scada.service
+
+https://www.baeldung.com/linux/run-command-start-up
