@@ -50,7 +50,7 @@ config :scada_substations_unrc, Oban,
   queues: [default: 10]
 
 # logger config with file rotation, new feature on Elixir 1.15
-config :logger, :default_handler, level: :debug, format: "$time [$level] $message\n"
+config :logger, :default_handler, level: :info, format: "$time [$level] $message\n"
 
 config :logger, :default_handler,
   config: [

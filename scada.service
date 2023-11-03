@@ -2,7 +2,7 @@
 Description=Startup Scada Service Script
 
 [Service]
-ExecStart=/home/ramiro/Workspaces/UNRC/scada_substations_unrc/start_scada.sh
+ExecStart=/home/fernando/scada/scada_substations_unrc/start_scada.sh
 
 [Install]
 WantedBy=multi-user.target

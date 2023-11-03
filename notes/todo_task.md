@@ -10,3 +10,7 @@
 ## Added scada.service
 
 https://www.baeldung.com/linux/run-command-start-up
+
+## backup db
+pg_dump -U postgres -W -h localhost:5432 scada_unrc_prod > scada_unrc_prod_backup_11032023.sql
+https://platzi.com/tutoriales/100-postgresql-2017/2252-como-generar-una-backup-de-postgresql-y-como-restaurarla/
