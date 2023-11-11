@@ -1,8 +1,14 @@
 [Unit]
 Description=Startup Scada Service Script
+After=network.target
+Requires=network.target
 
 [Service]
-ExecStart=/home/ramiro/Workspaces/UNRC/scada_substations_unrc/start_scada.sh
+Type=forking
+WorkingDirectory=/home/ramiro/Workspaces/UNRC/scada_substations_unrc
+Environment=MIX_ENV=prod
+ExecStart=/home/ramiro/Workspaces/UNRC/scada_substations_unrc/_build/prod/rel/scada_substations_unrc/bin/scada_substations_unrc start
+ExecStop=/home/ramiro/Workspaces/UNRC/scada_substations_unrc/_build/prod/rel/scada_substations_unrc/bin/scada_substations_unrc stop
 
 [Install]
 WantedBy=multi-user.target

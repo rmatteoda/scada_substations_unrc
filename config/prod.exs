@@ -14,7 +14,7 @@ config :scada_substations_unrc, :device_table, [
     name: "sub_jardin",
     location: "Jardin",
     description: "Jardin",
-    disabled: false
+    disabled: true
   },
   %{ip: "192.168.0.7", name: "sub_arte", location: "Arte", description: "Arte", disabled: false},
   %{
@@ -22,7 +22,7 @@ config :scada_substations_unrc, :device_table, [
     name: "sub_biblio",
     location: "Biblioteca",
     description: "Biblioteca",
-    disabled: false
+    disabled: true
   }
 ]
 
@@ -50,11 +50,11 @@ config :scada_substations_unrc, Oban,
   queues: [default: 10]
 
 # logger config with file rotation, new feature on Elixir 1.15
-config :logger, :default_handler, level: :debug, format: "$time [$level] $message\n"
+config :logger, :default_handler, level: :info, format: "$time [$level] $message\n"
 
 config :logger, :default_handler,
   config: [
-    file: ~c"./log/system.log",
+    file: "/home/ramiro/Workspaces/UNRC/scada_substations_unrc/log/system.log",
     filesync_repeat_interval: 2000,
     file_check: 2000,
     # 10 mega

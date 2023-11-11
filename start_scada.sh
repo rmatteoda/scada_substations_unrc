@@ -5,8 +5,10 @@
 # path to app on linux 
 cd "/home/ramiro/Workspaces/UNRC/scada_substations_unrc"
 
-touch test_service_running_world.sh
+touch test_service_running_before.sh
 make start
+touch test_service_running_after.sh
+
 exit 0;
 
 

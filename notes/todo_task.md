@@ -10,3 +10,5 @@
 ## Added scada.service
 
 https://www.baeldung.com/linux/run-command-start-up
+
+https://elixirforum.com/t/elixir-apps-as-systemd-services-info-wiki/2400
