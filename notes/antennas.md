@@ -21,6 +21,10 @@ IP Siemens Jardin: 192.168.0.6
 IP Antena  Arte: 192.168.0.252  
 IP Siemens Arte: 192.168.0.7
 
+Antena UBNT nueva
+IP Antena Anfiteatro:    192.168.0.254 ubnt/nexant
+IP Siemens Anfiteatro:  192.168.0.5 admin/admin
+
 ## PC SCADA 
 user fernando / password nexant123
 password admin user windows 123

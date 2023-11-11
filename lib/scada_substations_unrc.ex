@@ -35,6 +35,12 @@ defmodule ScadaSubstationsUnrc do
     Substations.collected_data(substation_id)
   end
 
+  def collected_data_lenght(substation_name) do
+    {:ok, sub} = Substations.get_substation_by_name(substation_name)
+    all_data = Substations.collected_data(sub.id)
+    IO.inspect(length(all_data), label: "size data in subs: ")
+  end
+
   @spec collected_data_from(
           Substation.t(),
           pos_integer,
