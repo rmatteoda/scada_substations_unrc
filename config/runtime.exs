@@ -1,7 +1,7 @@
 import Config
 
 maybe_ipv6 = if System.get_env("ECTO_IPV6"), do: [:inet6], else: []
-env = System.get_env("MIX_ENV", "local_env")
+env = System.get_env("MIX_ENV", "prod")
 
 config :scada_substations_unrc, ScadaSubstationsUnrc.Mailer,
   adapter: Bamboo.SendGridAdapter,

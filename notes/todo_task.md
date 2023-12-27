@@ -7,8 +7,4 @@
 - deploy app with docker compose
   - some sample https://github.com/akoutmos/prom_ex/blob/master/example_applications/web_app/run_docker_stack.sh
 
-## Added scada.service
 
-https://www.baeldung.com/linux/run-command-start-up
-
-https://elixirforum.com/t/elixir-apps-as-systemd-services-info-wiki/2400

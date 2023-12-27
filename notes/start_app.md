@@ -5,3 +5,20 @@
 https://askubuntu.com/questions/228304/how-do-i-run-a-script-at-start-up
 https://www.tecmint.com/auto-execute-linux-scripts-during-reboot-or-startup/
 https://stackoverflow.com/questions/12973777/how-to-run-a-shell-script-at-startup/12973826#12973826
+
+## Added scada.service with release
+https://www.baeldung.com/linux/run-command-start-up
+https://elixirforum.com/t/elixir-apps-as-systemd-services-info-wiki/2400
+
+### some commands
+MIX_ENV=prod mix release
+
+sudo systemctl enable scada.service
+sudo systemctl daemon-reload 
+sudo systemctl restart scada.service
+sudo systemctl start scada.service
+sudo systemctl stop scada.service
+
+journalctl -u scada.service --since today
+
+pkill -f erl

@@ -6,6 +6,10 @@ Requires=network.target
 [Service]
 Type=forking
 WorkingDirectory=/home/ramiro/Workspaces/UNRC/scada_substations_unrc
+User=ramiro
+Restart=on-failure
+RestartSec=5
+EnvironmentFile=/home/ramiro/Workspaces/UNRC/scada_substations_unrc/.env
 Environment=MIX_ENV=prod
 ExecStart=/home/ramiro/Workspaces/UNRC/scada_substations_unrc/_build/prod/rel/scada_substations_unrc/bin/scada_substations_unrc start
 ExecStop=/home/ramiro/Workspaces/UNRC/scada_substations_unrc/_build/prod/rel/scada_substations_unrc/bin/scada_substations_unrc stop
